@@ -79,17 +79,17 @@ def fetch_hpd_violations(
 
         df = pd.DataFrame.from_records(results)
 
-        print(f"✓ Fetched {len(df):,} violation records")
+        print(f"[OK] Fetched {len(df):,} violation records")
 
         # Save to CSV
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         df.to_csv(save_path, index=False)
-        print(f"✓ Saved to {save_path}")
+        print(f"[OK] Saved to {save_path}")
 
         return df
 
     except Exception as e:
-        print(f"✗ Error fetching data: {e}")
+        print(f"[ERROR] Error fetching data: {e}")
         raise
     finally:
         client.close()
@@ -115,11 +115,11 @@ def fetch_hpd_complaints(
         results = client.get(dataset_id, limit=limit, order="receiveddate DESC")
         df = pd.DataFrame.from_records(results)
 
-        print(f"✓ Fetched {len(df):,} complaint records")
+        print(f"[OK] Fetched {len(df):,} complaint records")
 
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
         df.to_csv(save_path, index=False)
-        print(f"✓ Saved to {save_path}")
+        print(f"[OK] Saved to {save_path}")
 
         return df
 

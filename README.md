@@ -134,7 +134,7 @@ nyc-housing-violations-dashboard/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/nyc-housing-violations-dashboard.git
+   git clone https://github.com/snedmagdous/nyc-housing-violations-dashboard.git
    cd nyc-housing-violations-dashboard
    ```
 
@@ -286,14 +286,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👤 Author
 
 **Maya Murry**
-- Cornell University, B.A. Computer Science (May 2025)
-- Lead Full-Stack Developer at [Healthcare AI Startup]
+- Cornell University, B.Sc. Computer Science (May 2025)
+- Lead Full-Stack Developer at an AI Healthcare Startup
 - Focus: Data science for social justice and public service
 
-**Contact**: [Your preferred contact method]
+**Contact**: hello@mayamurry.com
 **Portfolio**: [mayamurry.com](https://mayamurry.com)
-**LinkedIn**: [Your LinkedIn]
-**GitHub**: [@yourusername](https://github.com/yourusername)
+**LinkedIn**: [[Your LinkedIn](https://www.linkedin.com/in/maya-murry)]
+**GitHub**: [@snedmagdous](https://github.com/snedmagdous)
 
 ---
 

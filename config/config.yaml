@@ -1,0 +1,51 @@
+# NYC Housing Violations Dashboard Configuration
+
+# Data Sources
+data_sources:
+  hpd_violations:
+    dataset_id: "wvxf-dwi5"
+    name: "Housing Maintenance Code Violations"
+  hpd_complaints:
+    dataset_id: "uwyv-629c"
+    name: "HPD Complaints"
+  pluto:
+    dataset_id: "64uk-42ks"
+    name: "Primary Land Use Tax Lot Output (PLUTO)"
+
+# NYC Open Data API
+api:
+  domain: "data.cityofnewyork.us"
+  rate_limit: 1000  # requests per hour without token
+
+# Database
+database:
+  # Connection details should be in .env file
+  # Format: postgresql://user:password@localhost:5432/dbname
+  pool_size: 5
+  max_overflow: 10
+
+# Analysis Parameters
+analysis:
+  # Date range for initial analysis
+  start_date: "2020-01-01"
+  end_date: null  # null means current date
+
+  # Geospatial
+  coordinate_system: "EPSG:4326"  # WGS 84 (lat/lon)
+  nyc_bounds:
+    min_lat: 40.4774
+    max_lat: 40.9176
+    min_lon: -74.2591
+    max_lon: -73.7004
+
+  # Violation severity weights
+  violation_weights:
+    C: 3  # Immediately hazardous
+    B: 2  # Hazardous
+    A: 1  # Non-hazardous
+
+# API Server
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true  # Auto-reload on code changes (development only)

@@ -292,7 +292,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Contact**: hello@mayamurry.com
 **Portfolio**: [mayamurry.com](https://mayamurry.com)
-**LinkedIn**: [[Your LinkedIn](https://www.linkedin.com/in/maya-murry)]
+**LinkedIn**: [linkedin.com/in/maya-murry](https://www.linkedin.com/in/maya-murry)
 **GitHub**: [@snedmagdous](https://github.com/snedmagdous)
 
 ---

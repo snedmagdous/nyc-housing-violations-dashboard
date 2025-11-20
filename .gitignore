@@ -73,6 +73,7 @@ logs/
 
 # Database
 *.sql
+!sql_queries/**/*.sql  # Allow SQL query examples
 postgres_data/
 
 # Node (for frontend)

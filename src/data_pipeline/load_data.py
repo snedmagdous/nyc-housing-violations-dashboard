@@ -33,10 +33,11 @@ def prepare_violations_data(df):
     for col in date_cols:
         df[col] = pd.to_datetime(df[col], errors='coerce')
 
-    # Rename 'class' column to 'violation_class' (class is reserved keyword)
-    if 'class' in df.columns:
-        df['violation_class'] = df['class']
-        df = df.drop(columns=['class'])
+    # Rename columns to match database schema
+    # The cleaned data might have 'violation_class', but DB expects 'class'
+    if 'violation_class' in df.columns:
+        df = df.rename(columns={'violation_class': 'class'})
+    # Also the database schema uses 'class' as the actual column name
 
     # Create PostGIS geometry (WKT format: POINT(longitude latitude))
     # Only for records with valid coordinates
@@ -85,23 +86,46 @@ def load_violations(engine, csv_path='data/processed/violations_cleaned.csv', ba
         for i in tqdm(range(num_batches), desc="  Loading batches"):
             start_idx = i * batch_size
             end_idx = min((i + 1) * batch_size, total_rows)
-            batch = df.iloc[start_idx:end_idx]
+            batch = df.iloc[start_idx:end_idx].copy()
 
-            # Convert geometry column for PostGIS
-            batch_data = batch.copy()
-            if 'geom' in batch_data.columns:
-                batch_data['geom'] = batch_data['geom'].apply(
-                    lambda x: WKTElement(x, srid=4326) if x else None
-                )
+            # Separate geom column for special handling
+            geom_data = batch['geom'].copy() if 'geom' in batch.columns else None
+            if 'geom' in batch.columns:
+                batch = batch.drop(columns=['geom'])
 
-            # Load batch
-            batch_data.to_sql(
+            # Load batch without geom first
+            batch.to_sql(
                 'violations',
                 conn,
                 if_exists='append',
                 index=False,
                 method='multi'
             )
+
+        # Now update geometry column using SQL in batches
+        print(f"  > Updating geometry column...")
+        update_batch_size = 100
+        records_with_geom = df[df['geom'].notna()][['violationid', 'geom']]
+
+        for i in tqdm(range(0, len(records_with_geom), update_batch_size), desc="  Updating geoms"):
+            batch = records_with_geom.iloc[i:i+update_batch_size]
+
+            # Build batch UPDATE using CASE statement
+            case_parts = []
+            violation_ids = []
+            for _, row in batch.iterrows():
+                violation_ids.append(row['violationid'])
+                case_parts.append(f"WHEN {row['violationid']} THEN ST_GeomFromText('{row['geom']}', 4326)")
+
+            if case_parts:
+                update_sql = f"""
+                UPDATE violations
+                SET geom = CASE violationid
+                    {' '.join(case_parts)}
+                END
+                WHERE violationid IN ({','.join(map(str, violation_ids))})
+                """
+                conn.execute(text(update_sql))
 
     print(f"    + Loaded {total_rows:,} violations")
 
@@ -155,19 +179,19 @@ def aggregate_buildings(engine):
         MAX(geom) as geom,
         COUNT(*) as total_violations,
         SUM(CASE WHEN is_open THEN 1 ELSE 0 END) as open_violations,
-        SUM(CASE WHEN violation_class = 'A' THEN 1 ELSE 0 END) as class_a_count,
-        SUM(CASE WHEN violation_class = 'B' THEN 1 ELSE 0 END) as class_b_count,
-        SUM(CASE WHEN violation_class = 'C' THEN 1 ELSE 0 END) as class_c_count,
-        SUM(CASE WHEN violation_class = 'I' THEN 1 ELSE 0 END) as class_i_count,
+        SUM(CASE WHEN class = 'A' THEN 1 ELSE 0 END) as class_a_count,
+        SUM(CASE WHEN class = 'B' THEN 1 ELSE 0 END) as class_b_count,
+        SUM(CASE WHEN class = 'C' THEN 1 ELSE 0 END) as class_c_count,
+        SUM(CASE WHEN class = 'I' THEN 1 ELSE 0 END) as class_i_count,
         SUM(CASE WHEN is_severe THEN 1 ELSE 0 END) as severe_violations,
         SUM(CASE WHEN is_rent_impairing THEN 1 ELSE 0 END) as rent_impairing_violations,
         MIN(inspectiondate) as first_violation_date,
         MAX(inspectiondate) as most_recent_violation_date,
         -- Simple risk score: weighted by severity and open status
         (
-            SUM(CASE WHEN violation_class = 'C' THEN 3 ELSE 0 END) +
-            SUM(CASE WHEN violation_class = 'B' THEN 2 ELSE 0 END) +
-            SUM(CASE WHEN violation_class = 'A' THEN 1 ELSE 0 END) +
+            SUM(CASE WHEN class = 'C' THEN 3 ELSE 0 END) +
+            SUM(CASE WHEN class = 'B' THEN 2 ELSE 0 END) +
+            SUM(CASE WHEN class = 'A' THEN 1 ELSE 0 END) +
             SUM(CASE WHEN is_open THEN 2 ELSE 0 END)
         )::float as risk_score
     FROM violations
@@ -226,10 +250,10 @@ def verify_load(engine):
 
             # Sample violation classes
             result = conn.execute(text("""
-                SELECT violation_class, COUNT(*) as count
+                SELECT class, COUNT(*) as count
                 FROM violations
-                GROUP BY violation_class
-                ORDER BY violation_class;
+                GROUP BY class
+                ORDER BY class;
             """))
             class_dist = result.fetchall()
 

@@ -11,7 +11,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
 
 # Import our route modules
-from src.api.routes import violations, buildings
+from src.api.routes import violations, buildings, analysis
 from src.api.database import test_db_connection
 
 # Initialize FastAPI app
@@ -46,6 +46,7 @@ app.add_middleware(
 # These connect our route files to the main app
 app.include_router(violations.router)
 app.include_router(buildings.router)
+app.include_router(analysis.router)
 
 
 @app.get("/")
@@ -75,40 +76,8 @@ async def health_check():
     }
 
 
-# Note: Violations and buildings endpoints are now in their respective route files
+# Note: Violations, buildings, and analysis endpoints are now in their respective route files
 # They're automatically included via app.include_router() above
-
-# Analysis endpoints will be implemented later
-@app.get("/api/analysis/hotspots")
-async def get_hotspots():
-    """
-    Get geospatial hotspot analysis.
-
-    **Status:** Coming soon
-
-    **Returns:**
-    - GeoJSON with violation hotspots
-    """
-    return {
-        "message": "Hotspot analysis endpoint coming soon",
-        "status": "not_implemented"
-    }
-
-
-@app.get("/api/analysis/trends")
-async def get_temporal_trends():
-    """
-    Get temporal trend analysis.
-
-    **Status:** Coming soon
-
-    **Returns:**
-    - Time series data of violation trends
-    """
-    return {
-        "message": "Temporal trends endpoint coming soon",
-        "status": "not_implemented"
-    }
 
 
 if __name__ == "__main__":

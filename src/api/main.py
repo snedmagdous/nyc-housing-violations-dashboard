@@ -4,15 +4,30 @@ FastAPI Application
 REST API for NYC Housing Violations data and analysis.
 """
 
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Optional, List
+import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
+# Import our route modules
+from src.api.routes import violations, buildings
+from src.api.database import test_db_connection
 
 # Initialize FastAPI app
 app = FastAPI(
     title="NYC Housing Violations API",
-    description="API for accessing and analyzing NYC housing violation data",
+    description="""
+    REST API for accessing and analyzing NYC housing violation data.
+
+    ## Features
+    - **Violations**: Search and filter housing violations
+    - **Buildings**: Aggregate building statistics and rankings
+    - **Analysis**: Hotspot and trend analysis (coming soon)
+
+    ## Data Source
+    Data from NYC Open Data - HPD Housing Maintenance Code Violations
+    """,
     version="0.1.0",
     docs_url="/docs",
     redoc_url="/redoc"
@@ -26,6 +41,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include routers
+# These connect our route files to the main app
+app.include_router(violations.router)
+app.include_router(buildings.router)
 
 
 @app.get("/")
@@ -41,95 +61,53 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    """Health check endpoint."""
+    """
+    Health check endpoint.
+
+    Checks if API and database are working.
+    """
+    db_connected = test_db_connection()
+
     return {
-        "status": "healthy",
-        "service": "nyc-housing-violations-api"
+        "status": "healthy" if db_connected else "degraded",
+        "service": "nyc-housing-violations-api",
+        "database": "connected" if db_connected else "disconnected"
     }
 
 
-@app.get("/api/violations")
-async def get_violations(
-    borough: Optional[str] = Query(None, description="Filter by borough"),
-    violation_class: Optional[str] = Query(None, description="Filter by class (A, B, or C)"),
-    limit: int = Query(100, le=1000, description="Max number of results")
-):
-    """
-    Get housing violations data.
+# Note: Violations and buildings endpoints are now in their respective route files
+# They're automatically included via app.include_router() above
 
-    **Parameters:**
-    - `borough`: Filter by NYC borough (Manhattan, Brooklyn, Queens, Bronx, Staten Island)
-    - `violation_class`: Filter by severity (A=non-hazardous, B=hazardous, C=immediately hazardous)
-    - `limit`: Maximum number of results to return (max 1000)
-
-    **Returns:**
-    - List of violation records
-    """
-    # TODO: Implement database query
-    return {
-        "message": "Endpoint under development",
-        "filters": {
-            "borough": borough,
-            "violation_class": violation_class,
-            "limit": limit
-        }
-    }
-
-
-@app.get("/api/buildings/{building_id}")
-async def get_building_violations(building_id: str):
-    """
-    Get all violations for a specific building.
-
-    **Parameters:**
-    - `building_id`: NYC building ID
-
-    **Returns:**
-    - Building details and violation history
-    """
-    # TODO: Implement database query
-    return {
-        "building_id": building_id,
-        "message": "Endpoint under development"
-    }
-
-
+# Analysis endpoints will be implemented later
 @app.get("/api/analysis/hotspots")
 async def get_hotspots():
     """
     Get geospatial hotspot analysis.
 
+    **Status:** Coming soon
+
     **Returns:**
     - GeoJSON with violation hotspots
     """
-    # TODO: Implement hotspot analysis
     return {
-        "message": "Hotspot analysis endpoint under development"
+        "message": "Hotspot analysis endpoint coming soon",
+        "status": "not_implemented"
     }
 
 
 @app.get("/api/analysis/trends")
-async def get_temporal_trends(
-    start_date: Optional[str] = Query(None, description="Start date (YYYY-MM-DD)"),
-    end_date: Optional[str] = Query(None, description="End date (YYYY-MM-DD)")
-):
+async def get_temporal_trends():
     """
     Get temporal trend analysis.
 
-    **Parameters:**
-    - `start_date`: Start of date range
-    - `end_date`: End of date range
+    **Status:** Coming soon
 
     **Returns:**
     - Time series data of violation trends
     """
-    # TODO: Implement temporal analysis
     return {
-        "message": "Temporal trends endpoint under development",
-        "date_range": {
-            "start": start_date,
-            "end": end_date
-        }
+        "message": "Temporal trends endpoint coming soon",
+        "status": "not_implemented"
     }
 
 

@@ -6,6 +6,26 @@
 
 > **Holding landlords accountable through data transparency**
 
+## 📌 Current Status (November 2025)
+
+This project demonstrates end-to-end data pipeline development, statistical analysis methodology, and system architecture for housing violations analysis. **Core ETL pipeline and exploratory analysis are complete.** Interactive dashboard and API are currently in development for future enhancement.
+
+**What's Complete:**
+- ✅ Data acquisition from NYC Open Data API (10,000+ violations)
+- ✅ Data cleaning and transformation pipeline using pandas
+- ✅ PostgreSQL database with PostGIS for geospatial queries
+- ✅ Exploratory data analysis with statistical insights
+- ✅ Advanced SQL queries (window functions, CTEs, geospatial operations)
+- ✅ FastAPI REST API with documented endpoints
+- ✅ React + TypeScript frontend foundation with search functionality
+
+**In Development:**
+- 🚧 Interactive data visualization dashboard
+- 🚧 Real-time violation trend analysis
+- 🚧 Geospatial mapping interface
+
+---
+
 An interactive data analysis platform that exposes patterns of housing code violations across New York City, identifies repeat offenders, and reveals enforcement gaps in affordable housing protection. Built to empower tenant advocacy and inform policy decisions.
 
 ---
@@ -246,22 +266,32 @@ Access API documentation at `http://localhost:8000/docs`
 
 ---
 
-## 📊 Key Findings *(Example - To Be Updated)*
+## 📊 Key Findings from Dataset Analysis
 
-> **Note**: These are placeholder findings. Actual results will be added after initial data analysis.
+Analysis of 10,000 NYC housing violations across 9,249 buildings reveals:
 
-1. **Enforcement gaps are widest in [specific neighborhoods]**
-   - Average complaint response time: X days in [neighborhood A] vs. Y days in [neighborhood B]
+1. **Geographic Concentration of Violations**
+   - Brooklyn accounts for 59% of all violations (5,904 cases)
+   - Bronx represents 38% (3,779 cases)
+   - Manhattan and Queens together account for only 3% of violations
+   - Indicates geographic disparities in housing code enforcement and compliance
 
-2. **Top 10 landlords account for Z% of Class C violations**
-   - Corporate ownership associated with higher violation rates than individual owners
+2. **Violation Severity Distribution**
+   - Class I (immediately hazardous): 90.1% of violations (9,010 cases)
+   - Class C (immediately hazardous): 4.5% (445 cases)
+   - Class B (hazardous): 3.7% (367 cases)
+   - Class A (non-hazardous): 1.8% (178 cases)
+   - The predominance of Class I violations suggests critical safety concerns requiring immediate attention
 
-3. **Seasonal patterns reveal predictable failure points**
-   - Heating violations spike 300% in winter months
-   - Suggests need for proactive inspections before heating season
+3. **Open Violations Indicate Ongoing Risk**
+   - 10% of violations (1,000 cases) remain open
+   - Open violations represent unresolved safety hazards affecting tenant welfare
+   - Demonstrates need for targeted enforcement and follow-up inspections
 
-4. **[X]% of complaints never result in inspections**
-   - Identifies systemic breakdown in enforcement pipeline
+4. **Data-Driven Policy Implications**
+   - High concentration in Brooklyn/Bronx suggests need for focused intervention resources
+   - Majority severe violations (Class I/C) highlight urgent habitability concerns
+   - Database enables identification of repeat offender buildings for proactive enforcement
 
 ---
 
@@ -290,7 +320,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Lead Full-Stack Developer at an AI Healthcare Startup
 - Focus: Data science for social justice and public service
 
-**Contact**: hello@mayamurry.com
+**Contact**: maya.khalil2022@gmail.com
 **Portfolio**: [mayamurry.com](https://mayamurry.com)
 **LinkedIn**: [linkedin.com/in/maya-murry](https://www.linkedin.com/in/maya-murry)
 **GitHub**: [@snedmagdous](https://github.com/snedmagdous)

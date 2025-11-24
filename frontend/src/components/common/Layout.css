@@ -1,0 +1,70 @@
+/**
+ * Layout Styles
+ *
+ * Defines the overall page structure and spacing
+ */
+
+.layout {
+  /* Make layout take full viewport height */
+  min-height: 100vh;
+
+  /* Use flexbox to push footer to bottom */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  /* Take up remaining space (pushes footer down) */
+  flex: 1;
+
+  /* Content spacing */
+  padding: 2rem;
+  max-width: 1400px;  /* Prevent content from getting too wide on large screens */
+  margin: 0 auto;     /* Center the content */
+  width: 100%;
+}
+
+/* Footer styles */
+.footer {
+  background-color: #2d3748;
+  color: #e2e8f0;
+  padding: 2rem;
+  margin-top: auto;  /* Push to bottom */
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.footer-content p {
+  margin: 0.25rem 0;
+}
+
+.footer-content a {
+  color: #90cdf4;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-content a:hover {
+  color: #63b3ed;
+  text-decoration: underline;
+}
+
+/* Responsive design for mobile */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}

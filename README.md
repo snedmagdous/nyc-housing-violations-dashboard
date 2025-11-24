@@ -350,9 +350,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [x] Project setup and structure
 - [x] Requirements and dependencies defined
-- [ ] Data fetching from NYC Open Data
-- [ ] Data cleaning and preprocessing
-- [ ] Exploratory data analysis
+- [x] Data fetching from NYC Open Data
+- [x] Data cleaning and preprocessing
+- [x] Exploratory data analysis
 - [ ] Geospatial analysis implementation
 - [ ] API development
 - [ ] Frontend dashboard

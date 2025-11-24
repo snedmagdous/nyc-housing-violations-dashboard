@@ -157,7 +157,7 @@ export const api = {
      * Search buildings by address or other criteria
      * Returns aggregated violation statistics for each building
      */
-    search: async (query: string): Promise<Building[]> => {
+    search: async (query: string): Promise<{ query: string; count: number; buildings: Building[] }> => {
       const response = await apiClient.get('/api/buildings/search', {
         params: { q: query },
       });

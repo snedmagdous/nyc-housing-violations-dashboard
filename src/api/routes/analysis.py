@@ -225,6 +225,37 @@ async def forecast_next_month(
 
 # =================== COMBINED INSIGHTS ===================
 
+@router.get("/stats")
+async def get_stats():
+    """
+    Get basic statistics for the dashboard home page.
+
+    Returns overall counts used by the frontend dashboard.
+    """
+    from src.api.database import engine
+    from sqlalchemy import text
+
+    with engine.connect() as conn:
+        # Get total violations
+        total_violations = conn.execute(text("SELECT COUNT(*) FROM violations")).scalar()
+
+        # Get open violations
+        open_violations = conn.execute(text("SELECT COUNT(*) FROM violations WHERE is_open = true")).scalar()
+
+        # Get total buildings
+        total_buildings = conn.execute(text("SELECT COUNT(*) FROM buildings")).scalar()
+
+        # Get severe violations (Class B or C)
+        severe_violations = conn.execute(text("SELECT COUNT(*) FROM violations WHERE is_severe = true")).scalar()
+
+    return {
+        "total_violations": total_violations or 0,
+        "open_violations": open_violations or 0,
+        "total_buildings": total_buildings or 0,
+        "total_severe_violations": severe_violations or 0
+    }
+
+
 @router.get("/insights/worst-offenders")
 async def get_worst_offenders(
     limit: int = Query(20, ge=1, le=100)

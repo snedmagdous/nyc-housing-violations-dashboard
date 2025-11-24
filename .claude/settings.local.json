@@ -4,7 +4,13 @@
       "Bash(npm create:*)",
       "Bash(npm install)",
       "Bash(npm install:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(python -m uvicorn:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": []

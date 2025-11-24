@@ -218,6 +218,47 @@ async def get_building_violations(
     }
 
 
+@router.get("/search")
+async def search_buildings(
+    q: str = Query(..., min_length=3, description="Search query (address, zip, etc.)"),
+    limit: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    """
+    Search for buildings by address.
+
+    **Usage:**
+    GET /api/buildings/search?q=123+main+st
+
+    **Returns:**
+    Buildings matching the search query
+    """
+    # Clean up search query
+    search_term = f"%{q}%"
+
+    query = """
+    SELECT * FROM buildings
+    WHERE
+        LOWER(full_address) LIKE LOWER(:search)
+        OR CAST(zip AS TEXT) LIKE :search
+        OR CAST(buildingid AS TEXT) = :exact_id
+    ORDER BY total_violations DESC
+    LIMIT :limit
+    """
+
+    result = db.execute(
+        text(query),
+        {"search": search_term, "exact_id": q, "limit": limit}
+    )
+    buildings = result.mappings().all()
+
+    return {
+        "query": q,
+        "count": len(buildings),
+        "buildings": buildings
+    }
+
+
 @router.get("/stats/top-offenders")
 async def get_top_offenders(
     limit: int = Query(10, ge=1, le=100, description="Number of buildings to return"),

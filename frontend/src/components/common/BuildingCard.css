@@ -1,0 +1,222 @@
+/**
+ * BuildingCard Styles
+ *
+ * Card design with clear visual hierarchy and interactive states
+ */
+
+.building-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Clickable cards get hover effects */
+.building-card.clickable {
+  cursor: pointer;
+}
+
+.building-card.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+  border: 2px solid #667eea;
+}
+
+/* Header section */
+.building-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.building-address {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+  flex: 1;
+}
+
+.building-borough {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Risk badge */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.risk-score {
+  background: rgba(255, 255, 255, 0.3);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.risk-critical {
+  background: linear-gradient(135deg, #f5576c 0%, #c81e1e 100%);
+  color: white;
+}
+
+.risk-high {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.risk-medium {
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+  color: #2d3748;
+}
+
+.risk-low {
+  background: linear-gradient(135deg, #a8e6cf 0%, #3ecd5e 100%);
+  color: #2d3748;
+}
+
+/* Statistics grid */
+.building-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2d3748;
+}
+
+.stat-value.highlight {
+  color: #f5576c;
+}
+
+/* Violation breakdown */
+.violation-breakdown {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #edf2f7;
+  border-radius: 8px;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.class-label {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.class-label.class-c {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.class-label.class-b {
+  background: #feebc8;
+  color: #dd6b20;
+}
+
+.class-label.class-a {
+  background: #bee3f8;
+  color: #2c5282;
+}
+
+/* Footer */
+.building-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.building-id,
+.building-zip {
+  font-family: monospace;
+}
+
+/* Click hint */
+.click-hint {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.875rem;
+  color: #667eea;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.building-card.clickable:hover .click-hint {
+  opacity: 1;
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .building-card {
+    padding: 1rem;
+  }
+
+  .building-header {
+    flex-direction: column;
+  }
+
+  .building-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .violation-breakdown {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .building-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}

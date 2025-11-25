@@ -25,6 +25,98 @@ router = APIRouter(
 )
 
 
+# IMPORTANT: Static routes (like /search, /stats/top-offenders) must come BEFORE dynamic routes (like /{building_id})
+# Otherwise FastAPI will match "search" as a building_id parameter!
+
+
+@router.get("/search")
+async def search_buildings(
+    q: str = Query(..., min_length=3, description="Search query (address, zip, etc.)"),
+    limit: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    """
+    Search for buildings by address.
+
+    **Usage:**
+    GET /api/buildings/search?q=123+main+st
+
+    **Returns:**
+    Buildings matching the search query
+    """
+    # Clean up search query
+    search_term = f"%{q}%"
+
+    query = """
+    SELECT * FROM buildings
+    WHERE
+        LOWER(full_address) LIKE LOWER(:search)
+        OR CAST(zip AS TEXT) LIKE :search
+        OR CAST(buildingid AS TEXT) = :exact_id
+    ORDER BY total_violations DESC
+    LIMIT :limit
+    """
+
+    result = db.execute(
+        text(query),
+        {"search": search_term, "exact_id": q, "limit": limit}
+    )
+    buildings = result.mappings().all()
+
+    return {
+        "query": q,
+        "count": len(buildings),
+        "buildings": buildings
+    }
+
+
+@router.get("/stats/top-offenders")
+async def get_top_offenders(
+    limit: int = Query(10, ge=1, le=100, description="Number of buildings to return"),
+    borough: Optional[str] = Query(None, description="Filter by borough"),
+    db: Session = Depends(get_db)
+):
+    """
+    Get the worst offender buildings (highest risk scores).
+
+    **Usage:**
+    GET /api/buildings/stats/top-offenders?limit=10&borough=BRONX
+
+    **Returns:**
+    Top N buildings with highest risk scores
+    """
+    query = """
+    SELECT
+        buildingid,
+        full_address,
+        boro,
+        total_violations,
+        open_violations,
+        class_c_count,
+        severe_violations,
+        risk_score
+    FROM buildings
+    WHERE 1=1
+    """
+
+    params = {"limit": limit}
+
+    if borough:
+        query += " AND boro = :borough"
+        params["borough"] = borough.upper()
+
+    query += " ORDER BY risk_score DESC LIMIT :limit"
+
+    result = db.execute(text(query), params)
+    buildings = result.mappings().all()
+
+    return {
+        "count": len(buildings),
+        "borough_filter": borough,
+        "top_offenders": buildings
+    }
+
+
 @router.get("/", response_model=BuildingListResponse)
 async def list_buildings(
     borough: Optional[str] = Query(None, description="Filter by borough"),
@@ -215,92 +307,4 @@ async def get_building_violations(
         "page": page,
         "page_size": page_size,
         "violations": violations
-    }
-
-
-@router.get("/search")
-async def search_buildings(
-    q: str = Query(..., min_length=3, description="Search query (address, zip, etc.)"),
-    limit: int = Query(20, ge=1, le=100),
-    db: Session = Depends(get_db)
-):
-    """
-    Search for buildings by address.
-
-    **Usage:**
-    GET /api/buildings/search?q=123+main+st
-
-    **Returns:**
-    Buildings matching the search query
-    """
-    # Clean up search query
-    search_term = f"%{q}%"
-
-    query = """
-    SELECT * FROM buildings
-    WHERE
-        LOWER(full_address) LIKE LOWER(:search)
-        OR CAST(zip AS TEXT) LIKE :search
-        OR CAST(buildingid AS TEXT) = :exact_id
-    ORDER BY total_violations DESC
-    LIMIT :limit
-    """
-
-    result = db.execute(
-        text(query),
-        {"search": search_term, "exact_id": q, "limit": limit}
-    )
-    buildings = result.mappings().all()
-
-    return {
-        "query": q,
-        "count": len(buildings),
-        "buildings": buildings
-    }
-
-
-@router.get("/stats/top-offenders")
-async def get_top_offenders(
-    limit: int = Query(10, ge=1, le=100, description="Number of buildings to return"),
-    borough: Optional[str] = Query(None, description="Filter by borough"),
-    db: Session = Depends(get_db)
-):
-    """
-    Get the worst offender buildings (highest risk scores).
-
-    **Usage:**
-    GET /api/buildings/stats/top-offenders?limit=10&borough=BRONX
-
-    **Returns:**
-    Top N buildings with highest risk scores
-    """
-    query = """
-    SELECT
-        buildingid,
-        full_address,
-        boro,
-        total_violations,
-        open_violations,
-        class_c_count,
-        severe_violations,
-        risk_score
-    FROM buildings
-    WHERE 1=1
-    """
-
-    params = {"limit": limit}
-
-    if borough:
-        query += " AND boro = :borough"
-        params["borough"] = borough.upper()
-
-    query += " ORDER BY risk_score DESC LIMIT :limit"
-
-    result = db.execute(text(query), params)
-    buildings = result.mappings().all()
-
-    return {
-        "count": len(buildings),
-        "borough_filter": borough,
-        "top_offenders": buildings
     }

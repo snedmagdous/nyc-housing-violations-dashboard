@@ -1,0 +1,119 @@
+/**
+ * Pagination Styles
+ */
+
+.pagination {
+  /* Horizontal layout with centered content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+
+  /* Spacing */
+  padding: 2rem 0;
+  margin-top: 2rem;
+}
+
+/* Pagination button */
+.pagination-btn {
+  /* Size */
+  min-width: 40px;
+  height: 40px;
+  padding: 0 0.75rem;
+
+  /* Style */
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+
+  /* Text */
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+
+  /* Interaction */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Hover effect */
+.pagination-btn:hover:not(:disabled) {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #1f2937;
+}
+
+/* Active page (current page) */
+.pagination-btn.active {
+  /* Blue background for current page */
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+/* Active page hover - slightly darker */
+.pagination-btn.active:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Disabled button (can't go prev/next) */
+.pagination-btn:disabled {
+  /* Gray out */
+  background: #f3f4f6;
+  color: #9ca3af;
+  border-color: #e5e7eb;
+
+  /* No pointer */
+  cursor: not-allowed;
+}
+
+/* Ellipsis (...) between page numbers */
+.pagination-ellipsis {
+  /* Same height as buttons */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+
+  /* Gray text */
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+/* Responsive - smaller buttons on mobile */
+@media (max-width: 640px) {
+  .pagination-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .pagination-ellipsis {
+    min-width: 36px;
+    height: 36px;
+  }
+
+  /* Hide "Previous" and "Next" text on very small screens */
+  .pagination-btn:first-child::before {
+    content: '«';
+  }
+
+  .pagination-btn:last-child::before {
+    content: '»';
+  }
+
+  @media (max-width: 480px) {
+    .pagination-btn:first-child,
+    .pagination-btn:last-child {
+      font-size: 0;
+    }
+
+    .pagination-btn:first-child::before,
+    .pagination-btn:last-child::before {
+      font-size: 0.875rem;
+    }
+  }
+}

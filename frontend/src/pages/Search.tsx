@@ -1,10 +1,10 @@
 /**
  * Building Search Page
  *
- * Allows users to search for buildings by address and view violation history.
+ * Allows users to search for buildings by address and filter by various criteria.
  *
  * Flow:
- * 1. User types in search input
+ * 1. User can type in search input OR use filters (or both!)
  * 2. After 500ms of no typing (debounced), API call is made
  * 3. Results are displayed as BuildingCard components
  * 4. User can click a card to see detailed view
@@ -15,6 +15,9 @@ import { api } from '@/services/api';
 import type { Building } from '@/types/violation';
 import { SearchInput } from '@/components/common/SearchInput';
 import { BuildingCard } from '@/components/common/BuildingCard';
+import { FilterBar, type BuildingFilters } from '@/components/common/FilterBar';
+import { BuildingDetailModal } from '@/components/common/BuildingDetailModal';
+import { Pagination } from '@/components/common/Pagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import './Search.css';
 
@@ -22,8 +25,18 @@ export const Search = () => {
   // State for search query (what user types)
   const [searchQuery, setSearchQuery] = useState('');
 
+  // State for filters (borough, min violations, etc.)
+  const [filters, setFilters] = useState<BuildingFilters>({});
+
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const RESULTS_PER_PAGE = 50;  // Show 50 buildings per page
+
   // State for search results from API
   const [buildings, setBuildings] = useState<Building[]>([]);
+
+  // State for total count (may be more than what we're showing)
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   // State for selected building (when user clicks a card)
   const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
@@ -39,40 +52,82 @@ export const Search = () => {
   const debouncedQuery = useDebounce(searchQuery, 500);
 
   /**
-   * Effect: Make API call when debounced query changes
-   * This only runs 500ms after user stops typing
+   * Effect: Fetch buildings when search query or filters change
+   *
+   * Smart behavior:
+   * - If there's a search query (3+ chars), use search endpoint
+   * - If there are only filters, use list endpoint
+   * - Filters apply to search results too!
    */
   useEffect(() => {
-    // Don't search if query is too short (less than 3 characters)
-    if (debouncedQuery.length < 3) {
-      setBuildings([]);
-      return;
-    }
-
-    const searchBuildings = async () => {
+    const fetchBuildings = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        // Call the API search endpoint
-        const response = await api.buildings.search(debouncedQuery);
+        // Case 1: Text search with optional filters
+        if (debouncedQuery.length >= 3) {
+          // Use search endpoint and filter results client-side
+          const response = await api.buildings.search(debouncedQuery);
+          let results = response.buildings;
 
-        setBuildings(response.buildings);
+          // Apply borough filter if set
+          if (filters.borough) {
+            results = results.filter(b => b.boro === filters.borough);
+          }
 
-        // Show message if no results
-        if (response.count === 0) {
-          setError('No buildings found. Try a different search term.');
+          setBuildings(results);
+          setTotalCount(results.length);
+
+          if (results.length === 0) {
+            setError('No buildings found. Try adjusting your search or filters.');
+          }
+        }
+        // Case 2: Only filters (no text search)
+        else if (filters.borough) {
+          // Fetch current page of results
+          const response = await api.buildings.getAll({
+            borough: filters.borough,
+            page: currentPage,
+            page_size: RESULTS_PER_PAGE,  // 50 per page
+            sort_by: 'risk_score',  // Show highest risk first
+            sort_order: 'desc',
+          });
+          setBuildings(response.buildings);
+          setTotalCount(response.total);  // Total available in database
+
+          if (response.buildings.length === 0) {
+            setError('No buildings found with these filters.');
+          }
+        }
+        // Case 3: No search and no filters - show nothing
+        else {
+          setBuildings([]);
+          setTotalCount(0);
         }
       } catch (err) {
         console.error('Search error:', err);
-        setError('Failed to search buildings. Please try again.');
+        setError('Failed to fetch buildings. Please try again.');
       } finally {
         setLoading(false);
       }
     };
 
-    searchBuildings();
-  }, [debouncedQuery]); // Re-run when debounced query changes
+    // Only fetch if there's a query or filters
+    if (debouncedQuery.length >= 3 || filters.borough) {
+      fetchBuildings();
+    } else {
+      setBuildings([]);
+      setError(null);
+    }
+  }, [debouncedQuery, filters, currentPage]); // Re-run when query, filters, OR page changes
+
+  /**
+   * Reset to page 1 when filters change
+   */
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters, debouncedQuery]);
 
   /**
    * Handle building card click
@@ -89,6 +144,20 @@ export const Search = () => {
    */
   const handleCloseDetail = () => {
     setSelectedBuilding(null);
+  };
+
+  /**
+   * Calculate total pages
+   */
+  const totalPages = Math.ceil(totalCount / RESULTS_PER_PAGE);
+
+  /**
+   * Handle page change
+   */
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of results
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -108,15 +177,18 @@ export const Search = () => {
         />
       </div>
 
+      {/* Filter bar */}
+      <FilterBar filters={filters} onFilterChange={setFilters} />
+
       {/* Search hints */}
-      {searchQuery.length === 0 && (
+      {searchQuery.length === 0 && !filters.borough && (
         <div className="search-hints">
           <h3>Search Tips:</h3>
           <ul>
             <li>🏠 Enter a street address (e.g., "123 Broadway")</li>
             <li>📮 Search by ZIP code (e.g., "10001")</li>
             <li>🏢 Use a building ID if you know it</li>
-            <li>🔍 Minimum 3 characters required</li>
+            <li>🔍 Minimum 3 characters required OR select a borough filter</li>
           </ul>
         </div>
       )}
@@ -140,8 +212,17 @@ export const Search = () => {
       {!loading && !error && buildings.length > 0 && (
         <div className="search-results">
           <div className="results-header">
-            <h2>Found {buildings.length} building{buildings.length !== 1 ? 's' : ''}</h2>
-            <p>Click a building to see detailed violation history</p>
+            <h2>
+              {totalCount > buildings.length ? (
+                <>Showing {buildings.length} of {totalCount.toLocaleString()} buildings</>
+              ) : (
+                <>Found {buildings.length} building{buildings.length !== 1 ? 's' : ''}</>
+              )}
+            </h2>
+            <p>
+              {totalCount > buildings.length && 'Top results sorted by risk score. '}
+              Click a building to see detailed violation history
+            </p>
           </div>
 
           <div className="results-grid">
@@ -153,32 +234,25 @@ export const Search = () => {
               />
             ))}
           </div>
+
+          {/* Pagination - only show for filtered results */}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
         </div>
       )}
 
-      {/* Detailed view modal (will implement in next step) */}
+      {/* Building Detail Modal - Shows full violation history */}
       {selectedBuilding && (
-        <div className="detail-modal">
-          <div className="detail-modal-content">
-            <button className="close-button" onClick={handleCloseDetail}>
-              ✕
-            </button>
-            <h2>{selectedBuilding.full_address}</h2>
-            <p>Building ID: {selectedBuilding.buildingid}</p>
-            <p className="detail-note">
-              🚧 Detailed view coming soon! Will show:
-              <ul>
-                <li>Complete violation history</li>
-                <li>Violation timeline chart</li>
-                <li>Class breakdown visualization</li>
-                <li>Individual violation details</li>
-              </ul>
-            </p>
-            <button onClick={handleCloseDetail} className="close-detail-button">
-              Close
-            </button>
-          </div>
-        </div>
+        <BuildingDetailModal
+          building={selectedBuilding}
+          isOpen={true}
+          onClose={handleCloseDetail}
+        />
       )}
     </div>
   );

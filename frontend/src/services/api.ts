@@ -1,7 +1,7 @@
 /**
  * API Service Layer
  *
- * This file centralizes all HTTP requests to your FastAPI backend.
+ * This file centralizes all HTTP requests to the FastAPI backend.
  * Benefits:
  * - Single source of truth for API endpoints
  * - Easy to mock for testing
@@ -83,7 +83,7 @@ apiClient.interceptors.response.use(
       }
     } else if (error.request) {
       // Request made but no response received
-      console.error('No response from server - is your FastAPI backend running?');
+      console.error('No response from server - is the FastAPI backend running?');
     } else {
       // Something else went wrong
       console.error('Request error:', error.message);
@@ -128,10 +128,14 @@ export const api = {
 
     /**
      * Get violations for a specific building
+     *
+     * Backend returns: { building_id, total_violations, page, page_size, violations: [...] }
+     * We extract just the violations array for convenience
      */
     getByBuilding: async (buildingId: number): Promise<Violation[]> => {
       const response = await apiClient.get(`/api/buildings/${buildingId}/violations`);
-      return response.data;
+      // Backend returns an object with 'violations' array, extract it
+      return response.data.violations || response.data;
     },
 
     /**
@@ -153,6 +157,27 @@ export const api = {
    * BUILDINGS ENDPOINTS
    */
   buildings: {
+    /**
+     * Get all buildings with optional filters
+     * Use this for filtered browsing (by borough, violation count, etc.)
+     */
+    getAll: async (params?: {
+      borough?: string;
+      min_violations?: number;
+      min_open_violations?: number;
+      min_risk_score?: number;
+      has_class_c?: boolean;
+      sort_by?: string;
+      sort_order?: string;
+      page?: number;
+      page_size?: number;
+    }): Promise<{ total: number; page: number; page_size: number; buildings: Building[] }> => {
+      const response = await apiClient.get('/api/buildings/', {
+        params,
+      });
+      return response.data;
+    },
+
     /**
      * Search buildings by address or other criteria
      * Returns aggregated violation statistics for each building

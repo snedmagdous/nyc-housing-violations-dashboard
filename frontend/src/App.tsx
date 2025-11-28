@@ -1,7 +1,7 @@
 /**
  * App.tsx - Main Application Component
  *
- * This is the root component of your React application.
+ * This is the root component of the React application.
  * It sets up React Router for navigation between pages.
  *
  * React Router Concepts:

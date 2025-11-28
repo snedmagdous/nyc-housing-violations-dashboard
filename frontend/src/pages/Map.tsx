@@ -18,6 +18,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Import heatmap plugin
+// @ts-ignore - leaflet.heat doesn't have perfect TypeScript support
 import 'leaflet.heat';
 
 // API and types
@@ -29,7 +33,6 @@ import { BuildingDetailModal } from '@/components/common/BuildingDetailModal';
 import { FilterBar, type BuildingFilters } from '@/components/common/FilterBar';
 
 // Styles
-import 'leaflet/dist/leaflet.css';
 import './Map.css';
 
 // NYC borough boundaries GeoJSON
@@ -62,8 +65,14 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
     if (points.length === 0) return;
 
+    // Debug: Check if heatLayer is available
+    console.log('L.heatLayer available?', typeof (L as any).heatLayer);
+    console.log('Number of points:', points.length);
+    console.log('Sample points:', points.slice(0, 3));
+
     // Create heatmap layer with custom gradient (yellow → red)
-    heatLayerRef.current = (L as any).heatLayer(points, {
+    // @ts-ignore
+    heatLayerRef.current = L.heatLayer(points, {
       radius: 25,           // Size of heat points
       blur: 35,             // Blur amount
       maxZoom: 17,          // Max zoom where heatmap shows

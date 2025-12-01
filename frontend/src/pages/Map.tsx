@@ -16,7 +16,8 @@
 // IMPORTS
 // -------
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Popup } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -65,25 +66,29 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
     if (points.length === 0) return;
 
-    // Debug: Check if heatLayer is available
-    console.log('L.heatLayer available?', typeof (L as any).heatLayer);
-    console.log('Number of points:', points.length);
-    console.log('Sample points:', points.slice(0, 3));
+    // Get current zoom level for dynamic sizing
+    const currentZoom = map.getZoom();
+    const dynamicRadius = Math.max(15, Math.min(40, currentZoom * 2));
+    const dynamicBlur = Math.max(20, Math.min(50, currentZoom * 2.5));
 
-    // Create heatmap layer with custom gradient (yellow → red)
+    // Create heatmap layer with enhanced gradient, dynamic sizing, and darker opacity
     // @ts-ignore
     heatLayerRef.current = L.heatLayer(points, {
-      radius: 25,           // Size of heat points
-      blur: 35,             // Blur amount
-      maxZoom: 17,          // Max zoom where heatmap shows
-      max: 100,             // Maximum intensity value
-      gradient: {           // Color gradient (yellow to red, no green)
-        0.0: '#fef08a',     // Very light yellow (low)
-        0.2: '#fde047',     // Light yellow
-        0.35: '#facc15',    // Yellow
-        0.5: '#f59e0b',     // Orange
-        0.7: '#ef4444',     // Red
-        1.0: '#b91c1c',     // Dark red (critical)
+      radius: dynamicRadius,    // Dynamic radius based on zoom
+      blur: dynamicBlur,        // Dynamic blur based on zoom
+      minOpacity: 0.5,          // Increased minimum opacity for better visibility
+      maxZoom: 18,              // Max zoom where heatmap shows
+      max: 100,                 // Maximum intensity value (matches risk_score max)
+      gradient: {               // Enhanced color gradient with higher opacity (yellow → orange → red)
+        0.0: 'rgba(254, 249, 195, 0.6)',   // Very light yellow (low violations) - 60% opacity
+        0.15: 'rgba(254, 240, 138, 0.65)', // Light yellow - 65% opacity
+        0.25: 'rgba(253, 224, 71, 0.7)',   // Yellow - 70% opacity
+        0.35: 'rgba(250, 204, 21, 0.75)',  // Bright yellow - 75% opacity
+        0.45: 'rgba(245, 158, 11, 0.8)',   // Orange - 80% opacity
+        0.6: 'rgba(249, 115, 22, 0.85)',   // Bright orange - 85% opacity
+        0.75: 'rgba(239, 68, 68, 0.9)',    // Red - 90% opacity
+        0.85: 'rgba(220, 38, 38, 0.93)',   // Darker red - 93% opacity
+        1.0: 'rgba(153, 27, 27, 0.95)',    // Very dark red (critical) - 95% opacity
       },
     }).addTo(map);
 
@@ -97,16 +102,43 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
         interactive: true,  // But still clickable!
       });
 
-      // Show tooltip on hover
+      // Show enhanced tooltip on hover
+      const riskColor = building.risk_score > 70 ? '#991b1b' :
+                        building.risk_score > 50 ? '#ef4444' :
+                        building.risk_score > 30 ? '#f59e0b' : '#facc15';
+
       marker.bindTooltip(`
-        <div style="font-size: 0.875rem;">
-          <strong>${building.full_address}</strong><br/>
-          <span style="color: #ef4444;">Risk: ${building.risk_score.toFixed(1)}</span> |
-          ${building.total_violations} violations
+        <div style="font-size: 0.875rem; min-width: 200px;">
+          <div style="font-weight: 700; margin-bottom: 0.5rem; color: #1f2937;">
+            ${building.full_address}
+          </div>
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 0.25rem;">
+            <span style="font-weight: 600; color: ${riskColor};">
+              Risk: ${building.risk_score.toFixed(1)}
+            </span>
+            <span style="color: #6b7280;">•</span>
+            <span style="color: #6b7280;">
+              ${building.total_violations} total
+            </span>
+          </div>
+          ${building.open_violations > 0 ? `
+            <div style="font-size: 0.8125rem; color: #ef4444; margin-top: 0.25rem;">
+              ⚠ ${building.open_violations} open violation${building.open_violations !== 1 ? 's' : ''}
+            </div>
+          ` : ''}
+          ${building.class_c_count > 0 ? `
+            <div style="font-size: 0.8125rem; color: #dc2626; font-weight: 600; margin-top: 0.25rem;">
+              🚨 ${building.class_c_count} Class C (critical)
+            </div>
+          ` : ''}
+          <div style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem; font-style: italic;">
+            Click for details
+          </div>
         </div>
       `, {
         direction: 'top',
         offset: [0, -10],
+        className: 'building-tooltip',
       });
 
       // Click to show details
@@ -120,8 +152,26 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
     markersRef.current = newMarkers;
 
+    // Update heatmap when zoom changes (for dynamic radius)
+    const handleZoomEnd = () => {
+      if (heatLayerRef.current && points.length > 0) {
+        const newZoom = map.getZoom();
+        const newRadius = Math.max(15, Math.min(40, newZoom * 2));
+        const newBlur = Math.max(20, Math.min(50, newZoom * 2.5));
+
+        // Update heatmap options
+        heatLayerRef.current.setOptions({
+          radius: newRadius,
+          blur: newBlur,
+        });
+      }
+    };
+
+    map.on('zoomend', handleZoomEnd);
+
     // Cleanup on unmount
     return () => {
+      map.off('zoomend', handleZoomEnd);
       if (heatLayerRef.current) {
         map.removeLayer(heatLayerRef.current);
       }
@@ -155,6 +205,89 @@ function MapBoundsController({ buildings }: { buildings: Building[] }) {
 }
 
 
+// BOROUGH LABEL COMPONENT
+// ------------------------
+function BoroughLabels() {
+  const map = useMap();
+
+  useEffect(() => {
+    // Borough centroids (approximate centers for label placement)
+    const boroughCenters: Array<{ name: string; coords: [number, number] }> = [
+      { name: 'MANHATTAN', coords: [40.7831, -73.9712] },
+      { name: 'BROOKLYN', coords: [40.6782, -73.9442] },
+      { name: 'QUEENS', coords: [40.7282, -73.7949] },
+      { name: 'BRONX', coords: [40.8448, -73.8648] },
+      { name: 'STATEN ISLAND', coords: [40.5795, -74.1502] },
+    ];
+
+    console.log('Creating borough labels:', boroughCenters.length);
+
+    const markers: L.Marker[] = [];
+
+    boroughCenters.forEach(({ name, coords }) => {
+      // Adjust icon size for Staten Island (longer name)
+      const iconWidth = name === 'STATEN ISLAND' ? 140 : 120;
+
+      const icon = L.divIcon({
+        className: 'borough-label',
+        html: `<div class="borough-label-text">${name}</div>`,
+        iconSize: [iconWidth, 30],
+        iconAnchor: [iconWidth / 2, 15],
+      });
+
+      const marker = L.marker(coords, {
+        icon,
+        interactive: false,
+        zIndexOffset: 1000, // Ensure labels appear on top
+      }).addTo(map);
+
+      markers.push(marker);
+      console.log(`Added label for ${name} at`, coords);
+    });
+
+    return () => {
+      markers.forEach(marker => map.removeLayer(marker));
+    };
+  }, [map]);
+
+  return null;
+}
+
+
+// COMPONENT TO ADD GRAY OVERLAY OUTSIDE NYC
+// ------------------------------------------
+// Simply adds a semi-transparent gray rectangle over the whole world
+// The borough GeoJSON layers will be rendered on top with the actual map tiles showing through
+function NYCMaskOverlay() {
+  const map = useMap();
+
+  useEffect(() => {
+    // Just add a simple gray rectangle over everything
+    // The map tiles and borough boundaries will show through
+    const worldBounds: L.LatLngBoundsExpression = [
+      [-90, -180],
+      [90, 180]
+    ];
+
+    const grayOverlay = L.rectangle(worldBounds, {
+      color: 'transparent',
+      fillColor: '#374151',
+      fillOpacity: 0.5,
+      interactive: false,
+      pane: 'tilePane', // Put it with the tiles so it's behind everything else
+    }).addTo(map);
+
+    console.log('Gray overlay added to map');
+
+    return () => {
+      map.removeLayer(grayOverlay);
+    };
+  }, [map]);
+
+  return null;
+}
+
+
 // MAIN MAP COMPONENT
 // ------------------
 export const Map = () => {
@@ -167,6 +300,8 @@ export const Map = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'heatmap' | 'markers'>('heatmap');
 
 
   // FETCH BUILDINGS ON MOUNT AND WHEN FILTERS CHANGE
@@ -199,10 +334,21 @@ export const Map = () => {
   }, [filters]);
 
 
+  // FILTER BUILDINGS BY SEARCH QUERY
+  // ---------------------------------
+  const filteredBuildings = buildings.filter(building => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      building.full_address.toLowerCase().includes(query) ||
+      building.boro.toLowerCase().includes(query)
+    );
+  });
+
   // CONVERT BUILDINGS TO HEATMAP POINTS
   // -----------------------------------
   // Each point is [lat, lng, intensity] where intensity is based on risk score
-  const heatmapPoints: Array<[number, number, number]> = buildings.map(building => [
+  const heatmapPoints: Array<[number, number, number]> = filteredBuildings.map(building => [
     building.latitude,
     building.longitude,
     building.risk_score, // Use risk score as intensity (0-100)
@@ -219,9 +365,9 @@ export const Map = () => {
   // BOROUGH BOUNDARY STYLE
   // ----------------------
   const boroughStyle = {
-    color: '#374151',      // Medium gray border (visible on light map)
-    weight: 2.5,           // Border width
-    opacity: 0.9,          // Border opacity
+    color: '#9ca3af',      // Light gray border (sleek and subtle)
+    weight: 1.5,           // Thinner border for sleeker look
+    opacity: 0.6,          // Semi-transparent
     fillColor: 'none',     // No fill
     fillOpacity: 0,        // Transparent
   };
@@ -235,14 +381,55 @@ export const Map = () => {
   return (
     <div className="map-page-fullscreen">
 
-      {/* FLOATING FILTER TOGGLE BUTTON */}
-      <button
-        className="filter-toggle-btn"
-        onClick={() => setShowFilters(!showFilters)}
-        aria-label="Toggle filters"
-      >
-        {showFilters ? '✕ Close' : '⚙ Filters'}
-      </button>
+      {/* FLOATING CONTROLS - TOP RIGHT */}
+      <div className="map-controls-container">
+        {/* Search Box */}
+        <div className="map-search-box">
+          <input
+            type="text"
+            placeholder="Search address, borough, or owner..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="map-search-input"
+          />
+          {searchQuery && (
+            <button
+              className="map-search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+
+        {/* View Mode Toggle */}
+        <div className="view-mode-toggle">
+          <button
+            className={viewMode === 'heatmap' ? 'active' : ''}
+            onClick={() => setViewMode('heatmap')}
+            aria-label="Heatmap view"
+          >
+            🔥 Heatmap
+          </button>
+          <button
+            className={viewMode === 'markers' ? 'active' : ''}
+            onClick={() => setViewMode('markers')}
+            aria-label="Markers view"
+          >
+            📍 Markers
+          </button>
+        </div>
+
+        {/* Filter Toggle Button */}
+        <button
+          className="filter-toggle-btn"
+          onClick={() => setShowFilters(!showFilters)}
+          aria-label="Toggle filters"
+        >
+          {showFilters ? '✕ Close' : '⚙ Filters'}
+        </button>
+      </div>
 
       {/* FLOATING FILTER PANEL */}
       {showFilters && (
@@ -250,7 +437,15 @@ export const Map = () => {
           <h3>Filter Violations</h3>
           <FilterBar filters={filters} onFilterChange={setFilters} />
           <div className="filter-stats">
-            Showing {buildings.length.toLocaleString()} buildings
+            {searchQuery ? (
+              <>
+                Showing {filteredBuildings.length.toLocaleString()} of {buildings.length.toLocaleString()} buildings
+              </>
+            ) : (
+              <>
+                Showing {buildings.length.toLocaleString()} buildings
+              </>
+            )}
           </div>
         </div>
       )}
@@ -298,15 +493,79 @@ export const Map = () => {
               style={boroughStyle}
             />
 
-            {/* Auto-fit map bounds */}
-            <MapBoundsController buildings={buildings} />
+            {/* Borough name labels */}
+            <BoroughLabels />
 
-            {/* HEATMAP LAYER */}
-            <HeatmapLayer
-              points={heatmapPoints}
-              buildings={buildings}
-              onBuildingClick={handleBuildingClick}
-            />
+            {/* Gray overlay outside NYC */}
+            <NYCMaskOverlay />
+
+            {/* Auto-fit map bounds */}
+            <MapBoundsController buildings={filteredBuildings} />
+
+            {/* CONDITIONAL VIEW: HEATMAP OR MARKERS */}
+            {viewMode === 'heatmap' ? (
+              <HeatmapLayer
+                points={heatmapPoints}
+                buildings={filteredBuildings}
+                onBuildingClick={handleBuildingClick}
+              />
+            ) : (
+              <MarkerClusterGroup
+                chunkedLoading
+                maxClusterRadius={50}
+                spiderfyOnMaxZoom
+                showCoverageOnHover={false}
+                zoomToBoundsOnClick
+              >
+                {filteredBuildings.map((building) => {
+                  const riskColor = building.risk_score > 70 ? '#991b1b' :
+                                    building.risk_score > 50 ? '#ef4444' :
+                                    building.risk_score > 30 ? '#f59e0b' : '#facc15';
+
+                  const markerIcon = L.divIcon({
+                    className: 'custom-marker-icon',
+                    html: `<div style="background-color: ${riskColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
+                    iconSize: [12, 12],
+                    iconAnchor: [6, 6],
+                  });
+
+                  return (
+                    <Marker
+                      key={building.buildingid}
+                      position={[building.latitude, building.longitude]}
+                      icon={markerIcon}
+                      eventHandlers={{
+                        click: () => handleBuildingClick(building),
+                      }}
+                    >
+                      <Popup>
+                        <div style={{ minWidth: '200px' }}>
+                          <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>
+                            {building.full_address}
+                          </div>
+                          <div style={{ fontSize: '0.875rem', color: riskColor }}>
+                            Risk Score: {building.risk_score.toFixed(1)}
+                          </div>
+                          <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                            {building.total_violations} total violations
+                          </div>
+                          {building.open_violations > 0 && (
+                            <div style={{ fontSize: '0.8125rem', color: '#ef4444', marginTop: '0.25rem' }}>
+                              ⚠ {building.open_violations} open
+                            </div>
+                          )}
+                          {building.class_c_count > 0 && (
+                            <div style={{ fontSize: '0.8125rem', color: '#dc2626', fontWeight: 600, marginTop: '0.25rem' }}>
+                              🚨 {building.class_c_count} Class C
+                            </div>
+                          )}
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+              </MarkerClusterGroup>
+            )}
           </MapContainer>
 
           {/* LEGEND - Floating bottom-right */}

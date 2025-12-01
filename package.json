@@ -1,0 +1,21 @@
+{
+  "name": "nyc-housing-violations",
+  "version": "1.0.0",
+  "description": "NYC Housing Violations Analysis Platform",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",
+    "dev:backend": "python -m uvicorn src.api.main:app --reload",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": [
+    "nyc",
+    "housing",
+    "violations",
+    "data-analysis"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

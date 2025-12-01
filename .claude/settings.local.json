@@ -10,7 +10,15 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(venvScriptsactivate)",
+      "Bash(venv/Scripts/pip install:*)",
+      "Bash(venv/Scripts/python:*)",
+      "Bash(curl:*)",
+      "Bash(npm run dev)",
+      "WebFetch(domain:data.cityofnewyork.us)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ],
     "deny": [],
     "ask": []

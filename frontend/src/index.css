@@ -14,15 +14,39 @@
 
 /* Root variables - define colors and spacing used throughout the app */
 :root {
-  /* Color palette */
-  --color-primary: #667eea;
-  --color-primary-dark: #5a67d8;
-  --color-secondary: #764ba2;
-  --color-bg: #f7fafc;
-  --color-text: #2d3748;
-  --color-text-light: #4a5568;
-  --color-border: #e2e8f0;
+  /* DARK HACKER THEME - Cyberpunk Justice */
+  /* Primary: Electric cyan/blue - data visualization, primary actions */
+  --color-primary: #00d9ff;
+  --color-primary-dark: #00a8cc;
+  --color-primary-glow: rgba(0, 217, 255, 0.4);
+
+  /* Secondary: Hot pink/magenta - highlights, alerts, severe violations */
+  --color-secondary: #ff006e;
+  --color-secondary-glow: rgba(255, 0, 110, 0.4);
+
+  /* Backgrounds: Deep dark tones */
+  --color-bg: #0a0e27;
+  --color-bg-elevated: #131829;
+  --color-bg-card: #1a1f3a;
+
+  /* Text: Light on dark */
+  --color-text: #e0e0e0;
+  --color-text-light: #a0a0a0;
+  --color-text-muted: #707080;
+
+  /* Borders & Lines: Subtle cyan glow */
+  --color-border: #2a3f5f;
+  --color-border-glow: rgba(0, 217, 255, 0.2);
+
+  /* Utility */
   --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Status colors */
+  --color-success: #00ff88;
+  --color-warning: #ffaa00;
+  --color-danger: #ff006e;
+  --color-info: #00d9ff;
 
   /* Typography */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

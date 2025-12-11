@@ -24,12 +24,14 @@
   width: 100%;
 }
 
-/* Footer styles */
+/* Footer styles - Cyberpunk Dark */
 .footer {
-  background-color: #2d3748;
-  color: #e2e8f0;
-  padding: 2rem;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-light);
+  padding: 2.5rem 2rem;
   margin-top: auto;  /* Push to bottom */
+  border-top: 1px solid var(--color-border-glow);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
 }
 
 .footer-content {
@@ -43,17 +45,20 @@
 
 .footer-content p {
   margin: 0.25rem 0;
+  color: var(--color-text-muted);
 }
 
 .footer-content a {
-  color: #90cdf4;
+  color: var(--color-primary);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .footer-content a:hover {
-  color: #63b3ed;
-  text-decoration: underline;
+  color: var(--color-secondary);
+  text-shadow: 0 0 10px var(--color-primary-glow);
+  text-decoration: none;
 }
 
 /* Responsive design for mobile */

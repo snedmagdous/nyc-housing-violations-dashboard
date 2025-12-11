@@ -11,6 +11,63 @@
 .home-page {
   max-width: 1200px;
   margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+/* Fade-in animations for all sections */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.hero {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.stats-section {
+  animation: fadeIn 0.8s ease-out 0.2s both;
+}
+
+.stat-card {
+  animation: fadeInScale 0.5s ease-out both;
+}
+
+.stat-card:nth-child(1) { animation-delay: 0.3s; }
+.stat-card:nth-child(2) { animation-delay: 0.4s; }
+.stat-card:nth-child(3) { animation-delay: 0.5s; }
+.stat-card:nth-child(4) { animation-delay: 0.6s; }
+
+.features-section {
+  animation: fadeIn 1s ease-out 0.4s both;
+}
+
+.feature-card {
+  animation: fadeInScale 0.6s ease-out both;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.7s; }
+.feature-card:nth-child(2) { animation-delay: 0.8s; }
+.feature-card:nth-child(3) { animation-delay: 0.9s; }
+
+.cta-section {
+  animation: fadeIn 0.8s ease-out 1s both;
 }
 
 /* Hero Section - Cyberpunk Dark */

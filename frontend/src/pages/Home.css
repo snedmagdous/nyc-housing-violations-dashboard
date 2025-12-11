@@ -383,21 +383,66 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  /* Tablet: 2x2 grid for stats */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
+  /* Mobile: Single column */
+  .hero {
+    padding: 2.5rem 1.5rem;
+  }
+
   .hero-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
 
   .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-description {
     font-size: 1rem;
   }
 
-  .stats-grid,
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem 1rem;
+  }
+
+  .stat-value {
+    font-size: 2.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.85rem;
+  }
+
   .features-grid {
     grid-template-columns: 1fr;
   }
 
-  .stat-value {
-    font-size: 2rem;
+  .feature-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .cta-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .cta-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .cta-button {
+    padding: 1rem 2rem;
+    font-size: 1rem;
   }
 }

@@ -13,36 +13,62 @@
   margin: 0 auto;
 }
 
-/* Hero Section */
+/* Hero Section - Cyberpunk Dark */
 .hero {
   text-align: center;
-  padding: 3rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 12px;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.1) 0%, rgba(255, 0, 110, 0.1) 100%);
+  border: 1px solid var(--color-border-glow);
+  border-radius: 16px;
   margin-bottom: 3rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 40px rgba(0, 217, 255, 0.2),
+              inset 0 0 40px rgba(0, 217, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated scan line effect */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+  to { left: 100%; }
 }
 
 .hero-title {
-  font-size: 2.5rem;
+  font-size: 3rem;
   margin-bottom: 1rem;
   font-weight: 700;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
   font-style: italic;
-  opacity: 0.95;
+  color: var(--color-primary);
+  font-weight: 300;
+  letter-spacing: 0.5px;
 }
 
 .hero-description {
-  font-size: 1rem;
-  max-width: 800px;
+  font-size: 1.1rem;
+  max-width: 900px;
   margin: 0 auto;
-  line-height: 1.6;
-  opacity: 0.9;
+  line-height: 1.8;
+  color: var(--color-text-light);
 }
 
 /* Statistics Section */

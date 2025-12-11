@@ -48,10 +48,11 @@
   --color-danger: #ff006e;
   --color-info: #00d9ff;
 
-  /* Typography */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  /* Typography - Modern tech fonts */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+
+  font-family: var(--font-display);
   line-height: 1.6;
   font-size: 16px;
 
@@ -60,11 +61,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Body styles */
+/* Import modern tech fonts from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* Body styles - Dark hacker aesthetic */
 body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--color-text);
+  /* Subtle grid pattern background for tech feel */
+  background-image:
+    linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 
 /* Ensure root div takes full height */

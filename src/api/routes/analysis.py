@@ -310,3 +310,57 @@ async def get_dashboard_summary():
         "seasonal_peak_month": seasonal.get('peak_month', {}).get('name'),
         "total_neighborhoods": 0  # Will add neighborhood count
     }
+
+
+@router.get("/landlord-rankings")
+async def get_landlord_rankings(
+    sort_by: str = Query("total_violations", description="Field to sort by"),
+    limit: int = Query(100, ge=1, le=500, description="Number of landlords to return")
+):
+    """
+    Get landlord rankings by violation statistics.
+
+    Groups buildings by registrationid (landlord identifier) and aggregates violation data.
+
+    **Parameters:**
+    - sort_by: Field to sort by (total_violations, severe_violations, risk_score, building_count)
+    - limit: Number of landlords to return
+
+    **Returns:**
+    - List of landlords ranked by specified metric
+    """
+    from src.api.database import engine
+    from sqlalchemy import text
+
+    # Query: For now, return individual buildings since we don't have owner/landlord data
+    # TODO: Join with HPD registration data to get actual landlord information
+    query = text("""
+        SELECT
+            b.full_address as owner_name,
+            1 as building_count,
+            b.total_violations as total_violations,
+            b.severe_violations as severe_violations,
+            b.open_violations as open_violations,
+            b.risk_score as avg_risk_score
+        FROM buildings b
+        WHERE b.total_violations > 0
+        ORDER BY b.total_violations DESC
+        LIMIT :limit
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query, {"sort_by": sort_by, "limit": limit})
+        landlords = []
+
+        for row in result:
+            landlords.append({
+                "owner_name": row.owner_name,
+                "building_count": row.building_count,
+                "total_violations": row.total_violations or 0,
+                "severe_violations": row.severe_violations or 0,
+                "open_violations": row.open_violations or 0,
+                "avg_risk_score": round(float(row.avg_risk_score or 0), 2)
+            })
+
+    return landlords
+

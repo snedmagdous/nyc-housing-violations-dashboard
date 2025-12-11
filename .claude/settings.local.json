@@ -18,7 +18,12 @@
       "Bash(npm run dev)",
       "WebFetch(domain:data.cityofnewyork.us)",
       "WebSearch",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []

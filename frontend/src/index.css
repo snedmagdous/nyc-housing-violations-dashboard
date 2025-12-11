@@ -86,11 +86,13 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--color-text);
   font-weight: 600;
   line-height: 1.2;
+  letter-spacing: -0.5px;
 }
 
 p {
   color: var(--color-text-light);
   line-height: 1.7;
+  font-weight: 300;
 }
 
 /* Link styles */

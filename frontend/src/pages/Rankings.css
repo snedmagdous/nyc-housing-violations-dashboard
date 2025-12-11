@@ -1,0 +1,675 @@
+/**
+ * Landlord Rankings Styles
+ *
+ * Data-driven accountability dashboard
+ * Inspired by NYC Public Advocate's Worst Landlord Watchlist
+ */
+
+/* PAGE CONTAINER */
+/* -------------- */
+.rankings-page {
+  min-height: 100vh;
+  background: #f9fafb;
+  padding: 2rem 1rem;
+}
+
+/* HEADER */
+/* ------- */
+.rankings-header {
+  max-width: 1400px;
+  margin: 0 auto 2rem;
+  padding: 2rem;
+  background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(153, 27, 27, 0.3);
+  color: white;
+}
+
+.header-content h1 {
+  margin: 0 0 0.5rem;
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.header-subtitle {
+  margin: 0;
+  font-size: 1.125rem;
+  opacity: 0.95;
+  font-weight: 400;
+}
+
+/* SUMMARY STATS */
+/* ------------- */
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 1.25rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.stat-card.severe {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.stat-card.open {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.9;
+}
+
+/* CONTROLS */
+/* -------- */
+.rankings-controls {
+  max-width: 1400px;
+  margin: 0 auto 1.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* SEARCH BOX */
+/* ---------- */
+.search-box {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  color: #1f2937;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+.search-clear {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #e5e7eb;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-clear:hover {
+  background: #d1d5db;
+  color: #1f2937;
+}
+
+/* LIMIT SELECTOR */
+/* -------------- */
+.limit-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: white;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #d1d5db;
+}
+
+.limit-selector label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.limit-selector select {
+  border: none;
+  background: transparent;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  cursor: pointer;
+  outline: none;
+  padding: 0.25rem;
+}
+
+.limit-selector select:hover {
+  color: #3b82f6;
+}
+
+/* TABLE CONTAINER */
+/* --------------- */
+.rankings-table-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* TABLE */
+/* ----- */
+.rankings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.rankings-table thead {
+  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+  color: white;
+}
+
+.rankings-table thead th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #4b5563;
+}
+
+.rankings-table thead th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.rankings-table thead th.sortable:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sort-indicator {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.rank-column {
+  width: 80px;
+  text-align: center !important;
+}
+
+.name-column {
+  min-width: 250px;
+}
+
+/* TABLE BODY */
+/* ---------- */
+.rankings-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.2s ease;
+}
+
+.rankings-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.rankings-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.landlord-row td {
+  padding: 1rem;
+}
+
+/* RANK CELL */
+/* --------- */
+.rank-cell {
+  text-align: center;
+}
+
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  min-width: 40px;
+  padding: 0.375rem 0.75rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  border-radius: 6px;
+}
+
+.rank-badge.top-three {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde047 100%);
+  color: #92400e;
+  font-size: 1.125rem;
+  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.3);
+}
+
+/* NAME CELL */
+/* --------- */
+.name-cell {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.landlord-name {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* NUMBER CELLS */
+/* ------------ */
+.number-cell {
+  text-align: center;
+  font-weight: 600;
+  color: #4b5563;
+  font-variant-numeric: tabular-nums;
+}
+
+.violations-cell .violations-total {
+  color: #991b1b;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.severe-cell .severe-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.open-cell .open-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: #fef3c7;
+  color: #92400e;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9375rem;
+}
+
+.text-muted {
+  color: #d1d5db;
+  font-size: 1.125rem;
+}
+
+/* RISK SCORE */
+/* ---------- */
+.risk-cell {
+  min-width: 120px;
+}
+
+.risk-score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.risk-value {
+  font-size: 1.125rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.risk-bar {
+  width: 100%;
+  max-width: 100px;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.risk-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* EMPTY STATE */
+/* ------------ */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state p {
+  margin: 0 0 1.5rem;
+  font-size: 1.125rem;
+  color: #6b7280;
+}
+
+.empty-state button {
+  padding: 0.75rem 1.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.empty-state button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* LOADING STATE */
+/* ------------- */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+}
+
+.loading-state p {
+  font-size: 1.125rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ERROR STATE */
+/* ----------- */
+.error-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  max-width: 500px;
+  margin: 3rem auto;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fee2e2;
+}
+
+.error-state h2 {
+  margin: 0 0 1rem;
+  font-size: 1.875rem;
+  color: #dc2626;
+}
+
+.error-state p {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+.error-state button {
+  padding: 0.75rem 1.5rem;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.error-state button:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* RESPONSIVE DESIGN */
+/* ----------------- */
+
+/* Tablets */
+@media (max-width: 1024px) {
+  .rankings-page {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.875rem;
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+  }
+
+  .summary-stats {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .stat-value {
+    font-size: 1.75rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+  }
+
+  .rankings-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-box {
+    max-width: none;
+  }
+
+  .limit-selector {
+    justify-content: space-between;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .rankings-page {
+    padding: 1rem 0.5rem;
+  }
+
+  .rankings-header {
+    padding: 1.5rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.9375rem;
+  }
+
+  .summary-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+  }
+
+  /* Horizontal scroll for table on mobile */
+  .rankings-table-container {
+    overflow-x: auto;
+  }
+
+  .rankings-table {
+    font-size: 0.8125rem;
+    min-width: 700px;
+  }
+
+  .rankings-table thead th {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .landlord-row td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .name-column {
+    min-width: 180px;
+  }
+
+  .rank-badge {
+    min-width: 32px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .rank-badge.top-three {
+    font-size: 1rem;
+  }
+
+  .landlord-name {
+    font-size: 0.9375rem;
+  }
+
+  .violations-cell .violations-total {
+    font-size: 0.9375rem;
+  }
+
+  .severe-badge,
+  .open-badge {
+    padding: 0.1875rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .risk-value {
+    font-size: 1rem;
+  }
+
+  .risk-bar {
+    max-width: 80px;
+  }
+}
+
+/* Very small mobile */
+@media (max-width: 480px) {
+  .header-content h1 {
+    font-size: 1.25rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.875rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.6875rem;
+  }
+
+  .search-input {
+    font-size: 0.875rem;
+    padding: 0.625rem 2.25rem 0.625rem 0.875rem;
+  }
+
+  .limit-selector {
+    padding: 0.375rem 0.75rem;
+  }
+
+  .limit-selector label,
+  .limit-selector select {
+    font-size: 0.8125rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .rankings-page {
+    background: white;
+  }
+
+  .rankings-controls,
+  .search-box,
+  .limit-selector {
+    display: none;
+  }
+
+  .rankings-header {
+    background: white;
+    color: black;
+    box-shadow: none;
+    border: 2px solid #991b1b;
+  }
+
+  .summary-stats {
+    display: none;
+  }
+
+  .rankings-table-container {
+    box-shadow: none;
+  }
+
+  .rankings-table tbody tr:hover {
+    background: white;
+  }
+}

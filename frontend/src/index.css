@@ -104,34 +104,48 @@ a:hover {
   color: var(--color-primary-dark);
 }
 
-/* Button defaults */
+/* Button defaults - Cyberpunk style */
 button {
   font-family: inherit;
   cursor: pointer;
-  border: none;
+  border: 1px solid var(--color-border-glow);
   outline: none;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  background: var(--color-bg-card);
+  color: var(--color-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px var(--color-primary-glow);
+  transform: translateY(-2px);
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
-/* Input defaults */
+/* Input defaults - Dark with cyan glow on focus */
 input, textarea, select {
   font-family: inherit;
   font-size: inherit;
   border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 0.5rem;
-  transition: border-color 0.2s;
+  transition: all 0.3s ease;
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
 }
 
 input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 3px var(--color-primary-glow),
+              0 0 20px var(--color-primary-glow);
 }
 
 /* Utility classes */
@@ -161,21 +175,23 @@ input:focus, textarea:focus, select:focus {
   animation: spin 0.8s linear infinite;
 }
 
-/* Scrollbar styling (Webkit browsers) */
+/* Scrollbar styling - Cyberpunk cyan */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: var(--color-bg-elevated);
+  border-left: 1px solid var(--color-border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 5px;
+  background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-radius: 6px;
+  border: 2px solid var(--color-bg-elevated);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-light);
+  box-shadow: 0 0 10px var(--color-primary-glow);
 }

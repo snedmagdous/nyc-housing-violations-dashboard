@@ -14,6 +14,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '@/services/api';
+import {
+  DatabaseIcon,
+  AlertIcon,
+  BuildingIcon,
+  FireIcon,
+  SearchIcon,
+  MapIcon,
+  ChartIcon
+} from '@/components/common/Icons';
 import './Home.css';
 
 interface DashboardStats {
@@ -81,7 +90,9 @@ export const Home = () => {
           <div className="stats-grid">
             {/* Total Violations Card */}
             <div className="stat-card">
-              <div className="stat-icon">📋</div>
+              <div className="stat-icon">
+                <DatabaseIcon size={40} />
+              </div>
               <div className="stat-value">
                 {stats.total_violations.toLocaleString()}
               </div>
@@ -90,7 +101,9 @@ export const Home = () => {
 
             {/* Open Violations Card */}
             <div className="stat-card highlight">
-              <div className="stat-icon">⚠️</div>
+              <div className="stat-icon">
+                <AlertIcon size={40} />
+              </div>
               <div className="stat-value">
                 {stats.open_violations.toLocaleString()}
               </div>
@@ -99,7 +112,9 @@ export const Home = () => {
 
             {/* Buildings Card */}
             <div className="stat-card">
-              <div className="stat-icon">🏢</div>
+              <div className="stat-icon">
+                <BuildingIcon size={40} />
+              </div>
               <div className="stat-value">
                 {stats.total_buildings.toLocaleString()}
               </div>
@@ -108,7 +123,9 @@ export const Home = () => {
 
             {/* Severe Violations Card */}
             <div className="stat-card highlight">
-              <div className="stat-icon">🚨</div>
+              <div className="stat-icon">
+                <FireIcon size={40} />
+              </div>
               <div className="stat-value">
                 {stats.total_severe_violations.toLocaleString()}
               </div>
@@ -123,7 +140,9 @@ export const Home = () => {
         <h2>Explore the Data</h2>
         <div className="features-grid">
           <Link to="/search" className="feature-card">
-            <div className="feature-icon">🔍</div>
+            <div className="feature-icon">
+              <SearchIcon size={48} />
+            </div>
             <h3>Building Search</h3>
             <p>
               Look up any NYC building by address to see its complete violation history,
@@ -132,7 +151,9 @@ export const Home = () => {
           </Link>
 
           <Link to="/map" className="feature-card">
-            <div className="feature-icon">🗺️</div>
+            <div className="feature-icon">
+              <MapIcon size={48} />
+            </div>
             <h3>Violation Map</h3>
             <p>
               Visualize violation hotspots across NYC. Explore geographic patterns and
@@ -141,7 +162,9 @@ export const Home = () => {
           </Link>
 
           <Link to="/rankings" className="feature-card">
-            <div className="feature-icon">📊</div>
+            <div className="feature-icon">
+              <ChartIcon size={48} />
+            </div>
             <h3>Landlord Rankings</h3>
             <p>
               See the worst offenders: landlords and property owners with the most

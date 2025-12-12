@@ -84,10 +84,14 @@ export const Search = () => {
           }
         }
         // Case 2: Only filters (no text search)
-        else if (filters.borough) {
+        else if (filters.borough || filters.minViolations || filters.minOpenViolations || filters.minRiskScore || filters.hasClassC) {
           // Fetch current page of results
           const response = await api.buildings.getAll({
             borough: filters.borough,
+            min_violations: filters.minViolations,
+            min_open_violations: filters.minOpenViolations,
+            min_risk_score: filters.minRiskScore,
+            has_class_c: filters.hasClassC,
             page: currentPage,
             page_size: RESULTS_PER_PAGE,  // 50 per page
             sort_by: 'risk_score',  // Show highest risk first
@@ -114,7 +118,8 @@ export const Search = () => {
     };
 
     // Only fetch if there's a query or filters
-    if (debouncedQuery.length >= 3 || filters.borough) {
+    const hasFilters = filters.borough || filters.minViolations || filters.minOpenViolations || filters.minRiskScore || filters.hasClassC;
+    if (debouncedQuery.length >= 3 || hasFilters) {
       fetchBuildings();
     } else {
       setBuildings([]);
@@ -181,14 +186,14 @@ export const Search = () => {
       <FilterBar filters={filters} onFilterChange={setFilters} />
 
       {/* Search hints */}
-      {searchQuery.length === 0 && !filters.borough && (
+      {searchQuery.length === 0 && !filters.borough && !filters.minViolations && !filters.minOpenViolations && !filters.minRiskScore && !filters.hasClassC && (
         <div className="search-hints">
           <h3>Search Tips:</h3>
           <ul>
             <li>🏠 Enter a street address (e.g., "123 Broadway")</li>
             <li>📮 Search by ZIP code (e.g., "10001")</li>
             <li>🏢 Use a building ID if you know it</li>
-            <li>🔍 Minimum 3 characters required OR select a borough filter</li>
+            <li>🔍 Minimum 3 characters required OR use filters below</li>
           </ul>
         </div>
       )}

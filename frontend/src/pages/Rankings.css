@@ -80,7 +80,8 @@
   font-weight: 800;
   line-height: 1;
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: var(--color-text);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
@@ -88,7 +89,8 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.9;
+  color: var(--color-text-light);
+  opacity: 0.95;
 }
 
 /* CONTROLS */

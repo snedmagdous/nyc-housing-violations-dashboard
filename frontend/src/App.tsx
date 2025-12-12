@@ -17,6 +17,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from '@/components/common/Layout';
+import { ScrollToTop } from '@/components/common/ScrollToTop';
 import { Home } from '@/pages/Home';
 import { Search } from '@/pages/Search';
 import { Map } from '@/pages/Map';
@@ -30,6 +31,8 @@ function App() {
      * It uses the browser's History API to sync UI with URL
      */
     <BrowserRouter>
+      {/* Scroll to top on route change */}
+      <ScrollToTop />
       {/* Layout wraps all pages with navbar and footer */}
       <Layout>
         {/* Routes container - only one route will render at a time */}

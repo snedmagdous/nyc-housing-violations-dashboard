@@ -131,11 +131,11 @@
 /* Statistics Section */
 .stats-section {
   margin-bottom: 4rem;
-  background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%);
   padding: 2.5rem;
   border-radius: 16px;
-  border: 1px solid rgba(96, 165, 250, 0.3);
-  box-shadow: 0 0 30px rgba(96, 165, 250, 0.15);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
 .stats-section h2 {
@@ -174,7 +174,7 @@
 
 /* Stat Cards - Dark with Neon Glow */
 .stat-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
   padding: 2.5rem 2rem;
   border-radius: 16px;
   border: 1px solid var(--color-border);
@@ -210,7 +210,7 @@
 
 /* Highlight cards for critical stats */
 .stat-card.highlight {
-  background: linear-gradient(135deg, rgba(255, 0, 110, 0.15) 0%, rgba(255, 0, 110, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
   border-color: var(--color-secondary);
 }
 

@@ -28,10 +28,37 @@
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(255, 0, 110, 0.15) 100%);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.about-section:hover .section-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px var(--color-primary-glow);
+  filter: drop-shadow(0 0 10px var(--color-primary));
+}
+
 .about-section h2 {
   color: var(--color-primary);
   font-size: 1.75rem;
-  margin-bottom: 1rem;
+  margin: 0;
   font-weight: 600;
 }
 

@@ -5,6 +5,15 @@
  * Provides context for why this tool exists and how to use it.
  */
 
+import {
+  TargetIcon,
+  DatabaseIcon,
+  MicroscopeIcon,
+  ShieldIcon,
+  CodeIcon,
+  UserIcon,
+  HeartIcon,
+} from '@/components/common/Icons';
 import './About.css';
 
 export const About = () => {
@@ -13,7 +22,12 @@ export const About = () => {
       <h1>About This Project</h1>
 
       <section className="about-section">
-        <h2>Mission</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <TargetIcon size={32} />
+          </div>
+          <h2>Mission</h2>
+        </div>
         <p>
           This dashboard was built to hold landlords accountable through data transparency.
           Thousands of NYC tenants live in buildings with serious housing code violations—lack
@@ -27,7 +41,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Data Sources</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <DatabaseIcon size={32} />
+          </div>
+          <h2>Data Sources</h2>
+        </div>
         <ul>
           <li>
             <strong>HPD Housing Maintenance Code Violations</strong> - NYC Open Data
@@ -46,7 +65,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Methodology</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <MicroscopeIcon size={32} />
+          </div>
+          <h2>Methodology</h2>
+        </div>
         <p>The analysis pipeline includes:</p>
         <ul>
           <li>
@@ -72,7 +96,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Understanding Violation Classes</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <ShieldIcon size={32} />
+          </div>
+          <h2>Understanding Violation Classes</h2>
+        </div>
         <div className="violation-classes">
           <div className="class-card class-c">
             <h3>Class C</h3>
@@ -105,7 +134,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Technology</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <CodeIcon size={32} />
+          </div>
+          <h2>Technology</h2>
+        </div>
         <p>Built with:</p>
         <ul>
           <li>
@@ -122,7 +156,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>About the Developer</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <UserIcon size={32} />
+          </div>
+          <h2>About the Developer</h2>
+        </div>
         <p>
           <strong>Maya Murry</strong>
           <br />
@@ -156,7 +195,12 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>Acknowledgments</h2>
+        <div className="section-header">
+          <div className="section-icon">
+            <HeartIcon size={32} />
+          </div>
+          <h2>Acknowledgments</h2>
+        </div>
         <p>
           This project uses data from NYC Open Data and builds on the work of tenant advocacy
           organizations fighting for housing justice across New York City.

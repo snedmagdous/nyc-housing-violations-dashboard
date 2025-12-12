@@ -13,7 +13,7 @@ export const About = () => {
       <h1>About This Project</h1>
 
       <section className="about-section">
-        <h2>🎯 Mission</h2>
+        <h2>Mission</h2>
         <p>
           This dashboard was built to hold landlords accountable through data transparency.
           Thousands of NYC tenants live in buildings with serious housing code violations—lack
@@ -27,7 +27,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>📊 Data Sources</h2>
+        <h2>Data Sources</h2>
         <ul>
           <li>
             <strong>HPD Housing Maintenance Code Violations</strong> - NYC Open Data
@@ -46,7 +46,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>🔬 Methodology</h2>
+        <h2>Methodology</h2>
         <p>The analysis pipeline includes:</p>
         <ul>
           <li>
@@ -72,7 +72,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>⚖️ Understanding Violation Classes</h2>
+        <h2>Understanding Violation Classes</h2>
         <div className="violation-classes">
           <div className="class-card class-c">
             <h3>Class C</h3>
@@ -105,7 +105,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>💻 Technology</h2>
+        <h2>Technology</h2>
         <p>Built with:</p>
         <ul>
           <li>
@@ -122,7 +122,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>👤 About the Developer</h2>
+        <h2>About the Developer</h2>
         <p>
           <strong>Maya Murry</strong>
           <br />
@@ -156,7 +156,7 @@ export const About = () => {
       </section>
 
       <section className="about-section">
-        <h2>🙏 Acknowledgments</h2>
+        <h2>Acknowledgments</h2>
         <p>
           This project uses data from NYC Open Data and builds on the work of tenant advocacy
           organizations fighting for housing justice across New York City.

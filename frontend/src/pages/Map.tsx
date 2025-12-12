@@ -68,16 +68,16 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
     // Get current zoom level for dynamic sizing
     const currentZoom = map.getZoom();
-    const dynamicRadius = Math.max(15, Math.min(40, currentZoom * 2));
-    const dynamicBlur = Math.max(20, Math.min(50, currentZoom * 2.5));
+    const dynamicRadius = Math.max(20, Math.min(50, currentZoom * 2.5));  // Increased radius for better spread
+    const dynamicBlur = Math.max(25, Math.min(60, currentZoom * 3));  // Increased blur for better visibility
 
     // Create heatmap layer with enhanced gradient, dynamic sizing, and darker opacity
     // @ts-ignore
     heatLayerRef.current = L.heatLayer(points, {
-      radius: dynamicRadius,    // Dynamic radius based on zoom
-      blur: dynamicBlur,        // Dynamic blur based on zoom
-      minOpacity: 0.5,          // Increased minimum opacity for better visibility
-      maxZoom: 18,              // Max zoom where heatmap shows
+      radius: dynamicRadius,    // Dynamic radius based on zoom (increased)
+      blur: dynamicBlur,        // Dynamic blur based on zoom (increased)
+      minOpacity: 0.6,          // Increased minimum opacity for better visibility
+      maxZoom: 20,              // Max zoom where heatmap shows (increased to show even when zoomed in)
       max: 100,                 // Maximum intensity value (matches risk_score max)
       gradient: {               // Enhanced color gradient with higher opacity (yellow → orange → red)
         0.0: 'rgba(254, 249, 195, 0.6)',   // Very light yellow (low violations) - 60% opacity
@@ -92,14 +92,17 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
       },
     }).addTo(map);
 
-    // Add invisible clickable markers for each building
-    // These allow users to click on buildings even though we're showing a heatmap
+    // Add visible clickable markers for each building
+    // These allow users to click on buildings and are visible at all zoom levels
     const newMarkers = buildings.map((building) => {
       const marker = L.circleMarker([building.latitude, building.longitude], {
-        radius: 8,
-        fillOpacity: 0,     // Invisible
-        opacity: 0,         // Invisible
-        interactive: true,  // But still clickable!
+        radius: 10,         // Larger radius for better visibility
+        fillOpacity: 0.3,   // Semi-visible
+        opacity: 0.6,       // Semi-visible border
+        fillColor: building.risk_score > 70 ? '#991b1b' : building.risk_score > 50 ? '#ef4444' : building.risk_score > 30 ? '#f59e0b' : '#facc15',
+        color: '#ffffff',   // White border
+        weight: 2,          // Border thickness
+        interactive: true,  // Clickable
       });
 
       // Show enhanced tooltip on hover
@@ -156,8 +159,8 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
     const handleZoomEnd = () => {
       if (heatLayerRef.current && points.length > 0) {
         const newZoom = map.getZoom();
-        const newRadius = Math.max(15, Math.min(40, newZoom * 2));
-        const newBlur = Math.max(20, Math.min(50, newZoom * 2.5));
+        const newRadius = Math.max(20, Math.min(50, newZoom * 2.5));  // Increased radius
+        const newBlur = Math.max(25, Math.min(60, newZoom * 3));  // Increased blur
 
         // Update heatmap options
         heatLayerRef.current.setOptions({
@@ -165,6 +168,12 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
           blur: newBlur,
         });
       }
+
+      // Update marker sizes based on zoom level for better visibility
+      const markerRadius = Math.max(8, Math.min(15, newZoom * 0.8));
+      markersRef.current.forEach(marker => {
+        marker.setRadius(markerRadius);
+      });
     };
 
     map.on('zoomend', handleZoomEnd);

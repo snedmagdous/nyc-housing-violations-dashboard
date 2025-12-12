@@ -9,7 +9,7 @@
 /* -------------- */
 .rankings-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--color-bg);
   padding: 2rem 1rem;
 }
 
@@ -19,10 +19,11 @@
   max-width: 1400px;
   margin: 0 auto 2rem;
   padding: 2rem;
-  background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.15) 0%, rgba(255, 0, 110, 0.15) 100%);
+  border: 1px solid var(--color-border-glow);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(153, 27, 27, 0.3);
-  color: white;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  color: var(--color-text);
 }
 
 .header-content h1 {
@@ -49,28 +50,29 @@
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--color-bg-elevated);
   backdrop-filter: blur(10px);
   padding: 1.25rem;
   border-radius: 8px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--color-border);
   transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-bg-card);
+  border-color: var(--color-primary);
   transform: translateY(-2px);
 }
 
 .stat-card.severe {
-  background: rgba(239, 68, 68, 0.25);
-  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 .stat-card.open {
-  background: rgba(245, 158, 11, 0.25);
-  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
 }
 
 .stat-value {
@@ -111,22 +113,22 @@
 .search-input {
   width: 100%;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
   font-size: 0.9375rem;
-  color: #1f2937;
-  background: white;
+  color: var(--color-text);
+  background: var(--color-bg-card);
   transition: all 0.2s ease;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
 .search-input::placeholder {
-  color: #9ca3af;
+  color: var(--color-text-muted);
 }
 
 .search-clear {
@@ -134,13 +136,13 @@
   right: 0.5rem;
   top: 50%;
   transform: translateY(-50%);
-  background: #e5e7eb;
+  background: var(--color-bg-elevated);
   border: none;
   width: 26px;
   height: 26px;
   border-radius: 50%;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-light);
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
@@ -149,8 +151,8 @@
 }
 
 .search-clear:hover {
-  background: #d1d5db;
-  color: #1f2937;
+  background: var(--color-border);
+  color: var(--color-primary);
 }
 
 /* LIMIT SELECTOR */
@@ -159,16 +161,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: white;
+  background: var(--color-bg-card);
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  border: 2px solid #d1d5db;
+  border: 2px solid var(--color-border);
 }
 
 .limit-selector label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--color-text-light);
   white-space: nowrap;
 }
 
@@ -177,14 +179,14 @@
   background: transparent;
   font-size: 0.9375rem;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
   cursor: pointer;
   outline: none;
   padding: 0.25rem;
 }
 
 .limit-selector select:hover {
-  color: #3b82f6;
+  color: var(--color-primary);
 }
 
 /* TABLE CONTAINER */
@@ -192,9 +194,10 @@
 .rankings-table-container {
   max-width: 1400px;
   margin: 0 auto;
-  background: white;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   overflow: hidden;
 }
 
@@ -207,8 +210,9 @@
 }
 
 .rankings-table thead {
-  background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-  color: white;
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .rankings-table thead th {
@@ -218,7 +222,7 @@
   font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  border-bottom: 2px solid #4b5563;
+  border-bottom: 2px solid var(--color-border);
 }
 
 .rankings-table thead th.sortable {
@@ -228,7 +232,8 @@
 }
 
 .rankings-table thead th.sortable:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-card);
+  color: var(--color-primary);
 }
 
 .sort-indicator {
@@ -249,12 +254,12 @@
 /* TABLE BODY */
 /* ---------- */
 .rankings-table tbody tr {
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
   transition: background 0.2s ease;
 }
 
 .rankings-table tbody tr:hover {
-  background: #f9fafb;
+  background: var(--color-bg-elevated);
 }
 
 .rankings-table tbody tr:last-child {
@@ -263,6 +268,7 @@
 
 .landlord-row td {
   padding: 1rem;
+  color: var(--color-text);
 }
 
 /* RANK CELL */
@@ -278,30 +284,33 @@
   gap: 0.25rem;
   min-width: 40px;
   padding: 0.375rem 0.75rem;
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--color-bg-elevated);
+  color: var(--color-text-light);
   font-weight: 700;
   font-size: 0.9375rem;
   border-radius: 6px;
+  border: 1px solid var(--color-border);
 }
 
 .rank-badge.top-three {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde047 100%);
-  color: #92400e;
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.2) 0%, rgba(255, 0, 110, 0.2) 100%);
+  color: var(--color-primary);
   font-size: 1.125rem;
-  box-shadow: 0 2px 8px rgba(250, 204, 21, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px var(--color-primary-glow);
 }
 
 /* NAME CELL */
 /* --------- */
 .name-cell {
   font-weight: 600;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 .landlord-name {
   font-size: 1rem;
   line-height: 1.4;
+  color: var(--color-text);
 }
 
 /* NUMBER CELLS */
@@ -309,12 +318,12 @@
 .number-cell {
   text-align: center;
   font-weight: 600;
-  color: #4b5563;
+  color: var(--color-text-light);
   font-variant-numeric: tabular-nums;
 }
 
 .violations-cell .violations-total {
-  color: #991b1b;
+  color: var(--color-secondary);
   font-size: 1.0625rem;
   font-weight: 700;
 }
@@ -322,8 +331,9 @@
 .severe-cell .severe-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 6px;
   font-weight: 700;
   font-size: 0.9375rem;
@@ -332,15 +342,16 @@
 .open-cell .open-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 6px;
   font-weight: 700;
   font-size: 0.9375rem;
 }
 
 .text-muted {
-  color: #d1d5db;
+  color: var(--color-text-muted);
   font-size: 1.125rem;
 }
 
@@ -385,20 +396,21 @@
   padding: 3rem 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  background: white;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 .empty-state p {
   margin: 0 0 1.5rem;
   font-size: 1.125rem;
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
 .empty-state button {
   padding: 0.75rem 1.5rem;
-  background: #3b82f6;
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -409,9 +421,10 @@
 }
 
 .empty-state button:hover {
-  background: #2563eb;
+  background: var(--color-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 12px var(--color-primary-glow);
+  filter: brightness(1.1);
 }
 
 /* LOADING STATE */
@@ -438,28 +451,28 @@
   padding: 3rem 2rem;
   max-width: 500px;
   margin: 3rem auto;
-  background: white;
+  background: var(--color-bg-card);
   border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border: 2px solid #fee2e2;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--color-secondary);
 }
 
 .error-state h2 {
   margin: 0 0 1rem;
   font-size: 1.875rem;
-  color: #dc2626;
+  color: var(--color-secondary);
 }
 
 .error-state p {
   margin: 0 0 1.5rem;
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--color-text-light);
   line-height: 1.6;
 }
 
 .error-state button {
   padding: 0.75rem 1.5rem;
-  background: #dc2626;
+  background: var(--color-secondary);
   color: white;
   border: none;
   border-radius: 8px;
@@ -469,9 +482,10 @@
 }
 
 .error-state button:hover {
-  background: #b91c1c;
+  background: var(--color-secondary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 12px var(--color-secondary-glow);
+  filter: brightness(1.1);
 }
 
 /* RESPONSIVE DESIGN */

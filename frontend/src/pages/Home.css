@@ -131,6 +131,11 @@
 /* Statistics Section */
 .stats-section {
   margin-bottom: 4rem;
+  background: linear-gradient(135deg, rgba(96, 165, 250, 0.15) 0%, rgba(147, 197, 253, 0.1) 100%);
+  padding: 2.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 30px rgba(96, 165, 250, 0.15);
 }
 
 .stats-section h2 {
@@ -163,20 +168,21 @@
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 2rem;
   margin-bottom: 2rem;
 }
 
 /* Stat Cards - Dark with Neon Glow */
 .stat-card {
   background: var(--color-bg-card);
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 2rem;
   border-radius: 16px;
   border: 1px solid var(--color-border);
   text-align: center;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  min-width: 200px;
 }
 
 .stat-card::before {
@@ -245,11 +251,12 @@
 }
 
 .stat-label {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--color-text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;
+  line-height: 1.3;
 }
 
 /* Features Section */

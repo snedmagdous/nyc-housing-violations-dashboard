@@ -174,7 +174,7 @@
 
 /* Stat Cards - Dark with Neon Glow */
 .stat-card {
-  background: var(--color-bg-card);
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
   padding: 2.5rem 2rem;
   border-radius: 16px;
   border: 1px solid var(--color-border);
@@ -223,18 +223,20 @@
 .stat-icon {
   color: var(--color-primary);
   margin-bottom: 1rem;
-  opacity: 0.9;
+  opacity: 1;
   transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px var(--color-primary));
 }
 
 .stat-card.highlight .stat-icon {
   color: var(--color-secondary);
+  filter: drop-shadow(0 0 4px var(--color-secondary));
 }
 
 .stat-card:hover .stat-icon {
   opacity: 1;
   transform: scale(1.1);
-  filter: drop-shadow(0 0 8px currentColor);
+  filter: drop-shadow(0 0 12px currentColor);
 }
 
 .stat-value {
@@ -242,17 +244,18 @@
   font-weight: bold;
   margin-bottom: 0.75rem;
   font-family: var(--font-mono);
-  color: var(--color-text);
+  color: #e2e8f0;
   letter-spacing: -1px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 }
 
 .stat-card.highlight .stat-value {
-  color: var(--color-secondary);
+  color: #fecaca;
 }
 
 .stat-label {
   font-size: 0.95rem;
-  color: var(--color-text-muted);
+  color: #cbd5e1;
   text-transform: uppercase;
   letter-spacing: 1px;
   font-weight: 500;

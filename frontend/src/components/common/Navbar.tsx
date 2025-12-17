@@ -72,7 +72,7 @@ export const Navbar = () => {
             to="/rankings"
             className={`nav-link ${isActiveLink('/rankings', location.pathname) ? 'active' : ''}`}
           >
-            Landlord Rankings
+            Worst Buildings
           </Link>
         </li>
 

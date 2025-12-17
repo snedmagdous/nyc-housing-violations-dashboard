@@ -1,14 +1,14 @@
 /**
- * Landlord Rankings Page
+ * Worst Buildings Page
  *
- * Accountability dashboard showing NYC landlords ranked by housing violations
+ * Accountability dashboard showing NYC buildings ranked by housing violations
  * Inspired by NYC Public Advocate's Worst Landlord Watchlist
  *
  * Features:
- * - Sortable table of landlords ranked by violations
+ * - Sortable table of buildings ranked by violations
  * - Filter by borough, violation count, risk score
- * - Search by landlord name
- * - Expandable details for each landlord
+ * - Search by building address
+ * - Expandable details for each building
  * - Visual indicators for severity
  */
 
@@ -188,7 +188,7 @@ export const Rankings = () => {
       {/* HEADER */}
       <div className="rankings-header">
         <div className="header-content">
-          <h1>NYC Landlord Rankings</h1>
+          <h1>NYC Worst Buildings</h1>
           <p className="header-subtitle">
             Tracking housing code violations across New York City
           </p>
@@ -198,7 +198,7 @@ export const Rankings = () => {
         <div className="summary-stats">
           <div className="stat-card">
             <div className="stat-value">{filteredLandlords.length}</div>
-            <div className="stat-label">Landlords</div>
+            <div className="stat-label">Buildings</div>
           </div>
           <div className="stat-card">
             <div className="stat-value">{totalBuildings.toLocaleString()}</div>
@@ -221,11 +221,17 @@ export const Rankings = () => {
 
       {/* CONTROLS */}
       <div className="rankings-controls">
+        {/* OWNER INFO NOTE */}
+        <div className="owner-info-note">
+          <span className="note-icon">ℹ️</span>
+          Owner information not available in public dataset.
+        </div>
+
         {/* SEARCH */}
         <div className="search-box">
           <input
             type="text"
-            placeholder="Search by landlord name..."
+            placeholder="Search by building address..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -259,9 +265,9 @@ export const Rankings = () => {
           <thead>
             <tr>
               <th className="rank-column">#</th>
-              <th className="name-column">Landlord / Owner</th>
+              <th className="name-column">Building Address</th>
               <th className="sortable" onClick={() => handleSort('building_count')}>
-                Buildings {renderSortIndicator('building_count')}
+                Properties {renderSortIndicator('building_count')}
               </th>
               <th className="sortable" onClick={() => handleSort('total_violations')}>
                 Total Violations {renderSortIndicator('total_violations')}
@@ -338,14 +344,14 @@ export const Rankings = () => {
                 <tr className="landlord-details-row">
                   <td colSpan={7}>
                     <div className="landlord-details">
-                      <h3>Landlord Profile</h3>
+                      <h3>Building Profile</h3>
                       <div className="details-grid">
                         <div className="detail-item">
-                          <span className="detail-label">Owner Name:</span>
+                          <span className="detail-label">Address:</span>
                           <span className="detail-value">{landlord.owner_name}</span>
                         </div>
                         <div className="detail-item">
-                          <span className="detail-label">Total Buildings:</span>
+                          <span className="detail-label">Properties Owned:</span>
                           <span className="detail-value">{landlord.building_count}</span>
                         </div>
                         <div className="detail-item">
@@ -367,9 +373,6 @@ export const Rankings = () => {
                           </span>
                         </div>
                       </div>
-                      <div className="details-note">
-                        <p>Click outside to collapse or select another landlord.</p>
-                      </div>
                     </div>
                   </td>
                 </tr>
@@ -383,7 +386,7 @@ export const Rankings = () => {
       {/* EMPTY STATE */}
       {filteredLandlords.length === 0 && (
         <div className="empty-state">
-          <p>No landlords match your search.</p>
+          <p>No buildings match your search.</p>
           <button onClick={() => setSearchQuery('')}>Clear search</button>
         </div>
       )}

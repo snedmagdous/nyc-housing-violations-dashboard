@@ -1,5 +1,5 @@
 /**
- * Landlord Rankings Styles
+ * Worst Buildings Rankings Styles
  *
  * Data-driven accountability dashboard
  * Inspired by NYC Public Advocate's Worst Landlord Watchlist
@@ -102,6 +102,27 @@
   gap: 1rem;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+/* OWNER INFO NOTE */
+/* --------------- */
+.owner-info-note {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.note-icon {
+  font-size: 1.125rem;
+  opacity: 0.9;
 }
 
 /* SEARCH BOX */

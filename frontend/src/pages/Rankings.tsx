@@ -26,6 +26,7 @@ export const Rankings = () => {
   const [filteredLandlords, setFilteredLandlords] = useState<LandlordRanking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedLandlord, setSelectedLandlord] = useState<string | null>(null);
 
   // FILTERS & SORTING
   const [searchQuery, setSearchQuery] = useState('');
@@ -251,7 +252,11 @@ export const Rankings = () => {
           </thead>
           <tbody>
             {filteredLandlords.map((landlord, index) => (
-              <tr key={landlord.owner_name} className="landlord-row">
+              <tr
+                key={landlord.owner_name}
+                className={`landlord-row ${selectedLandlord === landlord.owner_name ? 'expanded' : ''}`}
+                onClick={() => setSelectedLandlord(selectedLandlord === landlord.owner_name ? null : landlord.owner_name)}
+              >
                 {/* RANK */}
                 <td className="rank-cell">
                   <div className={`rank-badge ${index < 3 ? 'top-three' : ''}`}>
@@ -303,6 +308,46 @@ export const Rankings = () => {
                   </div>
                 </td>
               </tr>
+              {selectedLandlord === landlord.owner_name && (
+                <tr className="landlord-details-row">
+                  <td colSpan={7}>
+                    <div className="landlord-details">
+                      <h3>Landlord Profile</h3>
+                      <div className="details-grid">
+                        <div className="detail-item">
+                          <span className="detail-label">Owner Name:</span>
+                          <span className="detail-value">{landlord.owner_name}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Total Buildings:</span>
+                          <span className="detail-value">{landlord.building_count}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Total Violations:</span>
+                          <span className="detail-value">{landlord.total_violations.toLocaleString()}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Severe Violations (B/C):</span>
+                          <span className="detail-value severe">{landlord.severe_violations.toLocaleString()}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Open Violations:</span>
+                          <span className="detail-value open">{landlord.open_violations.toLocaleString()}</span>
+                        </div>
+                        <div className="detail-item">
+                          <span className="detail-label">Average Risk Score:</span>
+                          <span className="detail-value" style={{ color: getRiskColor(landlord.avg_risk_score) }}>
+                            {landlord.avg_risk_score.toFixed(1)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="details-note">
+                        <p>Click anywhere outside this section to collapse.</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
             ))}
           </tbody>
         </table>

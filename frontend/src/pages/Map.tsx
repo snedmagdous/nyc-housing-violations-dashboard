@@ -16,7 +16,8 @@
 // IMPORTS
 // -------
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Popup } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-cluster';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -31,6 +32,7 @@ import type { Building } from '@/types/violation';
 // Components
 import { BuildingDetailModal } from '@/components/common/BuildingDetailModal';
 import { FilterBar, type BuildingFilters } from '@/components/common/FilterBar';
+import { FireIcon, MarkerIcon } from '@/components/common/Icons';
 
 // Styles
 import './Map.css';
@@ -52,44 +54,59 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
   const map = useMap();
   const heatLayerRef = useRef<any>(null);
   const markersRef = useRef<L.CircleMarker[]>([]);
+  const pointsRef = useRef(points);
 
+  // Update points ref when points change
   useEffect(() => {
+    pointsRef.current = points;
+  }, [points]);
+
+  // Function to create/recreate heatmap
+  const createHeatmap = () => {
     // Remove old heatmap layer if exists
     if (heatLayerRef.current) {
       map.removeLayer(heatLayerRef.current);
+      heatLayerRef.current = null;
     }
 
+    if (pointsRef.current.length === 0) return;
+
+    // Get current zoom level for dynamic sizing
+    const currentZoom = map.getZoom();
+    const dynamicRadius = Math.max(20, Math.min(50, currentZoom * 2.5));
+    const dynamicBlur = Math.max(25, Math.min(60, currentZoom * 3));
+
+    // Create heatmap layer
+    // @ts-ignore
+    heatLayerRef.current = L.heatLayer(pointsRef.current, {
+      radius: dynamicRadius,
+      blur: dynamicBlur,
+      minOpacity: 0.6,
+      maxZoom: 20,
+      max: 100,
+      gradient: {
+        0.0: 'rgba(254, 249, 195, 0.6)',
+        0.15: 'rgba(254, 240, 138, 0.65)',
+        0.25: 'rgba(253, 224, 71, 0.7)',
+        0.35: 'rgba(250, 204, 21, 0.75)',
+        0.45: 'rgba(245, 158, 11, 0.8)',
+        0.6: 'rgba(249, 115, 22, 0.85)',
+        0.75: 'rgba(239, 68, 68, 0.9)',
+        0.85: 'rgba(220, 38, 38, 0.93)',
+        1.0: 'rgba(153, 27, 27, 0.95)',
+      },
+    }).addTo(map);
+  };
+
+  useEffect(() => {
     // Remove old markers
     markersRef.current.forEach(marker => map.removeLayer(marker));
     markersRef.current = [];
 
-    if (points.length === 0) return;
+    // Create initial heatmap
+    createHeatmap();
 
-    // Get current zoom level for dynamic sizing
-    const currentZoom = map.getZoom();
-    const dynamicRadius = Math.max(20, Math.min(50, currentZoom * 2.5));  // Increased radius for better spread
-    const dynamicBlur = Math.max(25, Math.min(60, currentZoom * 3));  // Increased blur for better visibility
-
-    // Create heatmap layer with enhanced gradient, dynamic sizing, and darker opacity
-    // @ts-ignore
-    heatLayerRef.current = L.heatLayer(points, {
-      radius: dynamicRadius,    // Dynamic radius based on zoom (increased)
-      blur: dynamicBlur,        // Dynamic blur based on zoom (increased)
-      minOpacity: 0.6,          // Increased minimum opacity for better visibility
-      maxZoom: 20,              // Max zoom where heatmap shows (increased to show even when zoomed in)
-      max: 100,                 // Maximum intensity value (matches risk_score max)
-      gradient: {               // Enhanced color gradient with higher opacity (yellow → orange → red)
-        0.0: 'rgba(254, 249, 195, 0.6)',   // Very light yellow (low violations) - 60% opacity
-        0.15: 'rgba(254, 240, 138, 0.65)', // Light yellow - 65% opacity
-        0.25: 'rgba(253, 224, 71, 0.7)',   // Yellow - 70% opacity
-        0.35: 'rgba(250, 204, 21, 0.75)',  // Bright yellow - 75% opacity
-        0.45: 'rgba(245, 158, 11, 0.8)',   // Orange - 80% opacity
-        0.6: 'rgba(249, 115, 22, 0.85)',   // Bright orange - 85% opacity
-        0.75: 'rgba(239, 68, 68, 0.9)',    // Red - 90% opacity
-        0.85: 'rgba(220, 38, 38, 0.93)',   // Darker red - 93% opacity
-        1.0: 'rgba(153, 27, 27, 0.95)',    // Very dark red (critical) - 95% opacity
-      },
-    }).addTo(map);
+    if (buildings.length === 0) return;
 
     // Add invisible clickable markers for each building
     // These allow users to click on buildings but remain invisible
@@ -154,32 +171,18 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
     markersRef.current = newMarkers;
 
-    // Update heatmap when zoom changes (for dynamic radius)
+    // Recreate heatmap on zoom to ensure proper alignment
     const handleZoomEnd = () => {
-      if (heatLayerRef.current && points.length > 0) {
-        const newZoom = map.getZoom();
-        const newRadius = Math.max(20, Math.min(50, newZoom * 2.5));  // Increased radius
-        const newBlur = Math.max(25, Math.min(60, newZoom * 3));  // Increased blur
-
-        // Update heatmap options
-        heatLayerRef.current.setOptions({
-          radius: newRadius,
-          blur: newBlur,
-        });
-      }
-
-      // Update marker sizes based on zoom level for better visibility
-      const markerRadius = Math.max(8, Math.min(15, newZoom * 0.8));
-      markersRef.current.forEach(marker => {
-        marker.setRadius(markerRadius);
-      });
+      createHeatmap();
     };
 
     map.on('zoomend', handleZoomEnd);
+    map.on('moveend', handleZoomEnd);
 
     // Cleanup on unmount
     return () => {
       map.off('zoomend', handleZoomEnd);
+      map.off('moveend', handleZoomEnd);
       if (heatLayerRef.current) {
         map.removeLayer(heatLayerRef.current);
       }
@@ -309,6 +312,7 @@ export const Map = () => {
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState<'heatmap' | 'markers'>('heatmap');
 
   // FETCH BUILDINGS ON MOUNT AND WHEN FILTERS CHANGE
   // ------------------------------------------------
@@ -409,6 +413,24 @@ export const Map = () => {
           )}
         </div>
 
+        {/* View Mode Toggle */}
+        <div className="view-mode-toggle">
+          <button
+            className={viewMode === 'heatmap' ? 'active' : ''}
+            onClick={() => setViewMode('heatmap')}
+            aria-label="Heatmap view"
+          >
+            <FireIcon size={16} /> Heatmap
+          </button>
+          <button
+            className={viewMode === 'markers' ? 'active' : ''}
+            onClick={() => setViewMode('markers')}
+            aria-label="Markers view"
+          >
+            <MarkerIcon size={16} /> Markers
+          </button>
+        </div>
+
         {/* Filter Toggle Button */}
         <button
           className="filter-toggle-btn"
@@ -490,12 +512,65 @@ export const Map = () => {
             {/* Auto-fit map bounds */}
             <MapBoundsController buildings={filteredBuildings} />
 
-            {/* HEATMAP VIEW */}
-            <HeatmapLayer
-              points={heatmapPoints}
-              buildings={filteredBuildings}
-              onBuildingClick={handleBuildingClick}
-            />
+            {/* CONDITIONAL VIEW: HEATMAP OR MARKERS */}
+            {viewMode === 'heatmap' ? (
+              <HeatmapLayer
+                points={heatmapPoints}
+                buildings={filteredBuildings}
+                onBuildingClick={handleBuildingClick}
+              />
+            ) : (
+              <MarkerClusterGroup
+                chunkedLoading
+                maxClusterRadius={50}
+                spiderfyOnMaxZoom
+                showCoverageOnHover={false}
+                zoomToBoundsOnClick
+              >
+                {filteredBuildings.map((building) => {
+                  const riskColor = building.risk_score > 70 ? '#991b1b' :
+                                    building.risk_score > 50 ? '#ef4444' :
+                                    building.risk_score > 30 ? '#f59e0b' : '#facc15';
+
+                  return (
+                    <Marker
+                      key={building.buildingid}
+                      position={[building.latitude, building.longitude]}
+                      eventHandlers={{
+                        click: () => handleBuildingClick(building),
+                      }}
+                    >
+                      <Popup>
+                        <div style={{ minWidth: '200px' }}>
+                          <div style={{ fontWeight: 700, marginBottom: '0.5rem', color: '#1f2937' }}>
+                            {building.full_address}
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                            <span style={{ fontWeight: 600, color: riskColor }}>
+                              Risk: {building.risk_score.toFixed(1)}
+                            </span>
+                            <span style={{ color: '#6b7280' }}>•</span>
+                            <span style={{ color: '#6b7280' }}>
+                              {building.total_violations} violations
+                            </span>
+                          </div>
+                          {building.open_violations > 0 && (
+                            <div style={{ fontSize: '0.8125rem', color: '#ef4444', marginTop: '0.25rem' }}>
+                              {building.open_violations} open violation{building.open_violations !== 1 ? 's' : ''}
+                            </div>
+                          )}
+                          {building.class_c_count > 0 && (
+                            <div style={{ fontSize: '0.8125rem', color: '#dc2626', fontWeight: 600, marginTop: '0.25rem' }}>
+                              {building.class_c_count} Class C (critical)
+                            </div>
+                          )}
+                        </div>
+                      </Popup>
+                    </Marker>
+                  );
+                })}
+              </MarkerClusterGroup>
+            )}
           </MapContainer>
 
           {/* LEGEND - Floating bottom-right */}

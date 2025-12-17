@@ -252,11 +252,12 @@ export const Rankings = () => {
           </thead>
           <tbody>
             {filteredLandlords.map((landlord, index) => (
-              <tr
-                key={landlord.owner_name}
-                className={`landlord-row ${selectedLandlord === landlord.owner_name ? 'expanded' : ''}`}
-                onClick={() => setSelectedLandlord(selectedLandlord === landlord.owner_name ? null : landlord.owner_name)}
-              >
+              <>
+                <tr
+                  key={landlord.owner_name}
+                  className={`landlord-row ${selectedLandlord === landlord.owner_name ? 'expanded' : ''}`}
+                  onClick={() => setSelectedLandlord(selectedLandlord === landlord.owner_name ? null : landlord.owner_name)}
+                >
                 {/* RANK */}
                 <td className="rank-cell">
                   <div className={`rank-badge ${index < 3 ? 'top-three' : ''}`}>
@@ -348,6 +349,7 @@ export const Rankings = () => {
                   </td>
                 </tr>
               )}
+              </>
             ))}
           </tbody>
         </table>

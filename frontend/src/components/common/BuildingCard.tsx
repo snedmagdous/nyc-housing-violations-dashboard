@@ -92,7 +92,6 @@ export const BuildingCard = ({ building, onClick }: BuildingCardProps) => {
       {/* Additional info */}
       <div className="building-footer">
         <span className="building-id">Building ID: {building.buildingid}</span>
-        {building.zip && <span className="building-zip">ZIP: {building.zip}</span>}
       </div>
 
       {/* Click hint if clickable */}

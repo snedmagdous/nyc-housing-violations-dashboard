@@ -13,6 +13,7 @@
  */
 
 import type { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import './Layout.css';
 
@@ -21,6 +22,9 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => {
+  const location = useLocation();
+  const isMapPage = location.pathname === '/map';
+
   return (
     <div className="layout">
       {/* Navigation bar - appears on every page */}
@@ -31,31 +35,33 @@ export const Layout = ({ children }: LayoutProps) => {
         {children}
       </main>
 
-      {/* Footer - you can add project info, links, etc. */}
-      <footer className="footer">
-        <div className="footer-content">
-          <p>
-            Data from{' '}
-            <a
-              href="https://opendata.cityofnewyork.us/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              NYC Open Data
-            </a>
-          </p>
-          <p>
-            Built with 💜 for housing justice |{' '}
-            <a
-              href="https://github.com/snedmagdous/nyc-housing-violations-dashboard"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on GitHub
-            </a>
-          </p>
-        </div>
-      </footer>
+      {/* Footer - hidden on map page for full-screen experience */}
+      {!isMapPage && (
+        <footer className="footer">
+          <div className="footer-content">
+            <p>
+              Data from{' '}
+              <a
+                href="https://opendata.cityofnewyork.us/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                NYC Open Data
+              </a>
+            </p>
+            <p>
+              Built with 💜 for housing justice |{' '}
+              <a
+                href="https://github.com/snedmagdous/nyc-housing-violations-dashboard"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on GitHub
+              </a>
+            </p>
+          </div>
+        </footer>
+      )}
     </div>
   );
 };

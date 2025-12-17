@@ -4,7 +4,7 @@
   "description": "Dark cyberpunk-themed full-stack data visualization dashboard exposing NYC housing code violations. FastAPI + PostgreSQL backend, React 19 + TypeScript frontend with Leaflet maps, landlord rankings, and predictive analytics.",
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" --names \"backend,frontend\" --prefix-colors \"blue,green\"",
-    "dev:backend": "python -m uvicorn src.api.main:app --reload",
+    "dev:backend": "venv\\Scripts\\python -m uvicorn src.api.main:app --reload",
     "dev:frontend": "cd frontend && npm run dev"
   },
   "keywords": [

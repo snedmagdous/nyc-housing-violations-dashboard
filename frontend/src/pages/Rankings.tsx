@@ -15,6 +15,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { api } from '@/services/api';
 import type { LandlordRanking } from '@/types/violation';
+import { InfoIcon } from '@/components/common/Icons';
 import './Rankings.css';
 
 type SortField = 'total_violations' | 'severe_violations' | 'risk_score' | 'building_count';
@@ -223,7 +224,7 @@ export const Rankings = () => {
       <div className="rankings-controls">
         {/* OWNER INFO NOTE */}
         <div className="owner-info-note">
-          <span className="note-icon">ℹ️</span>
+          <InfoIcon size={18} className="note-icon" />
           Owner information not available in public dataset.
         </div>
 

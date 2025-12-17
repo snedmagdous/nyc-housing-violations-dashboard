@@ -12,7 +12,7 @@
  * - Visual indicators for severity
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { api } from '@/services/api';
 import type { LandlordRanking } from '@/types/violation';
 import './Rankings.css';
@@ -27,6 +27,7 @@ export const Rankings = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedLandlord, setSelectedLandlord] = useState<string | null>(null);
+  const tableRef = useRef<HTMLDivElement>(null);
 
   // FILTERS & SORTING
   const [searchQuery, setSearchQuery] = useState('');
@@ -102,6 +103,30 @@ export const Rankings = () => {
 
     setFilteredLandlords(results);
   }, [landlords, searchQuery, sortField, sortOrder, limitResults]);
+
+  // CLOSE EXPANDED LANDLORD ON OUTSIDE CLICK
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectedLandlord && tableRef.current) {
+        const target = event.target as HTMLElement;
+        // Check if click is outside the table or on a different landlord row
+        if (!tableRef.current.contains(target) ||
+            (target.closest('.landlord-row') && !target.closest('.landlord-details-row'))) {
+          // Only close if not clicking on the same expanded row
+          const clickedRow = target.closest('.landlord-row');
+          if (clickedRow && clickedRow.classList.contains('expanded')) {
+            return; // Don't close if clicking the expanded row itself
+          }
+          setSelectedLandlord(null);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [selectedLandlord]);
 
   // HANDLE SORT
   const handleSort = (field: SortField) => {
@@ -229,7 +254,7 @@ export const Rankings = () => {
       </div>
 
       {/* TABLE */}
-      <div className="rankings-table-container">
+      <div className="rankings-table-container" ref={tableRef}>
         <table className="rankings-table">
           <thead>
             <tr>
@@ -343,7 +368,7 @@ export const Rankings = () => {
                         </div>
                       </div>
                       <div className="details-note">
-                        <p>Click anywhere outside this section to collapse.</p>
+                        <p>Click outside to collapse or select another landlord.</p>
                       </div>
                     </div>
                   </td>

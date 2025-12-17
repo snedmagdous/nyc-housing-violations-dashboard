@@ -29,7 +29,7 @@ export const Navbar = () => {
   const location = useLocation();
 
   return (
-    <nav className="navbar">
+    <nav className="navbar" role="navigation" aria-label="Main navigation">
       {/* Logo and project title */}
       <div className="navbar-brand">
         <Link to="/" className="navbar-logo">

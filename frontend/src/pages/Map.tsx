@@ -16,8 +16,7 @@
 // IMPORTS
 // -------
 import { useState, useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap, Marker, Popup } from 'react-leaflet';
-import MarkerClusterGroup from 'react-leaflet-cluster';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -32,7 +31,6 @@ import type { Building } from '@/types/violation';
 // Components
 import { BuildingDetailModal } from '@/components/common/BuildingDetailModal';
 import { FilterBar, type BuildingFilters } from '@/components/common/FilterBar';
-import { FireIcon, MarkerIcon } from '@/components/common/Icons';
 
 // Styles
 import './Map.css';
@@ -93,17 +91,17 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
       },
     }).addTo(map);
 
-    // Add visible clickable markers for each building
-    // These allow users to click on buildings and are visible at all zoom levels
+    // Add invisible clickable markers for each building
+    // These allow users to click on buildings but remain invisible
     const newMarkers = buildings.map((building) => {
       const marker = L.circleMarker([building.latitude, building.longitude], {
-        radius: 10,         // Larger radius for better visibility
-        fillOpacity: 0.3,   // Semi-visible
-        opacity: 0.6,       // Semi-visible border
-        fillColor: building.risk_score > 70 ? '#991b1b' : building.risk_score > 50 ? '#ef4444' : building.risk_score > 30 ? '#f59e0b' : '#facc15',
-        color: '#ffffff',   // White border
-        weight: 2,          // Border thickness
-        interactive: true,  // Clickable
+        radius: 10,         // Hit area for clicking
+        fillOpacity: 0,     // Invisible
+        opacity: 0,         // Invisible border
+        fillColor: 'transparent',
+        color: 'transparent',
+        weight: 0,          // No border
+        interactive: true,  // Still clickable
       });
 
       // Show enhanced tooltip on hover
@@ -311,8 +309,6 @@ export const Map = () => {
   const [error, setError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'heatmap' | 'markers'>('heatmap');
-
 
   // FETCH BUILDINGS ON MOUNT AND WHEN FILTERS CHANGE
   // ------------------------------------------------
@@ -413,24 +409,6 @@ export const Map = () => {
           )}
         </div>
 
-        {/* View Mode Toggle */}
-        <div className="view-mode-toggle">
-          <button
-            className={viewMode === 'heatmap' ? 'active' : ''}
-            onClick={() => setViewMode('heatmap')}
-            aria-label="Heatmap view"
-          >
-            <FireIcon size={16} /> Heatmap
-          </button>
-          <button
-            className={viewMode === 'markers' ? 'active' : ''}
-            onClick={() => setViewMode('markers')}
-            aria-label="Markers view"
-          >
-            <MarkerIcon size={16} /> Markers
-          </button>
-        </div>
-
         {/* Filter Toggle Button */}
         <button
           className="filter-toggle-btn"
@@ -512,70 +490,12 @@ export const Map = () => {
             {/* Auto-fit map bounds */}
             <MapBoundsController buildings={filteredBuildings} />
 
-            {/* CONDITIONAL VIEW: HEATMAP OR MARKERS */}
-            {viewMode === 'heatmap' ? (
-              <HeatmapLayer
-                points={heatmapPoints}
-                buildings={filteredBuildings}
-                onBuildingClick={handleBuildingClick}
-              />
-            ) : (
-              <MarkerClusterGroup
-                chunkedLoading
-                maxClusterRadius={50}
-                spiderfyOnMaxZoom
-                showCoverageOnHover={false}
-                zoomToBoundsOnClick
-              >
-                {filteredBuildings.map((building) => {
-                  const riskColor = building.risk_score > 70 ? '#991b1b' :
-                                    building.risk_score > 50 ? '#ef4444' :
-                                    building.risk_score > 30 ? '#f59e0b' : '#facc15';
-
-                  const markerIcon = L.divIcon({
-                    className: 'custom-marker-icon',
-                    html: `<div style="background-color: ${riskColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-                    iconSize: [12, 12],
-                    iconAnchor: [6, 6],
-                  });
-
-                  return (
-                    <Marker
-                      key={building.buildingid}
-                      position={[building.latitude, building.longitude]}
-                      icon={markerIcon}
-                      eventHandlers={{
-                        click: () => handleBuildingClick(building),
-                      }}
-                    >
-                      <Popup>
-                        <div style={{ minWidth: '200px' }}>
-                          <div style={{ fontWeight: 700, marginBottom: '0.5rem' }}>
-                            {building.full_address}
-                          </div>
-                          <div style={{ fontSize: '0.875rem', color: riskColor }}>
-                            Risk Score: {building.risk_score.toFixed(1)}
-                          </div>
-                          <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                            {building.total_violations} total violations
-                          </div>
-                          {building.open_violations > 0 && (
-                            <div style={{ fontSize: '0.8125rem', color: '#ef4444', marginTop: '0.25rem' }}>
-                              ⚠ {building.open_violations} open
-                            </div>
-                          )}
-                          {building.class_c_count > 0 && (
-                            <div style={{ fontSize: '0.8125rem', color: '#dc2626', fontWeight: 600, marginTop: '0.25rem' }}>
-                              🚨 {building.class_c_count} Class C
-                            </div>
-                          )}
-                        </div>
-                      </Popup>
-                    </Marker>
-                  );
-                })}
-              </MarkerClusterGroup>
-            )}
+            {/* HEATMAP VIEW */}
+            <HeatmapLayer
+              points={heatmapPoints}
+              buildings={filteredBuildings}
+              onBuildingClick={handleBuildingClick}
+            />
           </MapContainer>
 
           {/* LEGEND - Floating bottom-right */}

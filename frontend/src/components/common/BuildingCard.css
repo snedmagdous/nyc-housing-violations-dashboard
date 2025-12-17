@@ -19,6 +19,11 @@
   cursor: pointer;
 }
 
+.building-card.clickable:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
 .building-card.clickable:hover {
   transform: translateY(-8px);
   box-shadow: 0 0 40px var(--color-primary-glow),

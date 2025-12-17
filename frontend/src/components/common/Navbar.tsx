@@ -33,7 +33,7 @@ export const Navbar = () => {
       {/* Logo and project title */}
       <div className="navbar-brand">
         <Link to="/" className="navbar-logo">
-          🏘️ NYC Housing Violations
+          NYC Housing Violations
         </Link>
         <span className="navbar-subtitle">Holding landlords accountable</span>
       </div>

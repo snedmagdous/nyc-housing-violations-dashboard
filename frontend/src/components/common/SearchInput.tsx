@@ -13,6 +13,7 @@
  */
 
 import { useState } from 'react';
+import { SearchIcon } from './Icons';
 import './SearchInput.css';
 
 interface SearchInputProps {
@@ -56,14 +57,15 @@ export const SearchInput = ({
           // Loading spinner
           <div className="spinner-small" />
         ) : (
-          // Search icon (using emoji - you could replace with SVG icon)
-          <span>🔍</span>
+          // Search icon
+          <SearchIcon size={20} />
         )}
       </div>
 
       {/* Input field */}
       <input
-        type="text"
+        type="search"
+        id="building-search"
         className="search-input"
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -71,6 +73,7 @@ export const SearchInput = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         placeholder={placeholder}
+        aria-label="Search for buildings by address, zip code, or building ID"
       />
 
       {/* Clear button (only shown when there's text) */}

@@ -107,6 +107,8 @@ export const Pagination = ({ currentPage, totalPages, onPageChange }: Pagination
             key={pageNum}
             className={`pagination-btn ${currentPage === pageNum ? 'active' : ''}`}
             onClick={() => onPageChange(pageNum)}
+            aria-label={`Go to page ${pageNum}`}
+            aria-current={currentPage === pageNum ? 'page' : undefined}
           >
             {pageNum}
           </button>

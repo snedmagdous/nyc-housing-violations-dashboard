@@ -40,11 +40,11 @@
 }
 
 
-/* MODAL CONTENT - The white box with all info */
-/* -------------------------------------------- */
+/* MODAL CONTENT - Dark theme box with all info */
+/* ---------------------------------------------- */
 .modal-content {
-  /* White background */
-  background: white;
+  /* Dark background */
+  background: var(--color-bg-card);
 
   /* Rounded corners */
   border-radius: 12px;
@@ -57,8 +57,9 @@
   max-height: 90vh;
   overflow-y: auto;  /* Enable vertical scrolling */
 
-  /* Box shadow for depth effect */
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  /* Box shadow for depth effect with cyan glow */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6),
+              0 0 0 1px var(--color-border);
 
   /* Slide-up animation */
   animation: slideUp 0.3s ease-out;
@@ -92,21 +93,21 @@
   padding: 2rem;
 
   /* Bottom border to separate from content */
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--color-border);
 }
 
 /* Building address title */
 .modal-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 /* Building ID, borough, ZIP - smaller gray text */
 .building-meta {
   margin: 0.5rem 0 0;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
 /* X close button */
@@ -117,7 +118,7 @@
 
   /* Large font for X symbol */
   font-size: 1.5rem;
-  color: #9ca3af;
+  color: var(--color-text-light);
 
   /* Pointer cursor on hover */
   cursor: pointer;
@@ -129,9 +130,9 @@
   transition: color 0.2s;
 }
 
-/* Darken X button on hover */
+/* Brighten X button on hover */
 .close-button:hover {
-  color: #374151;
+  color: var(--color-primary);
 }
 
 
@@ -146,14 +147,14 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 
-  /* Background color to separate from violations */
-  background: #f9fafb;
+  /* Dark background to separate from violations */
+  background: var(--color-bg-elevated);
 }
 
 /* Individual stat card */
 .stat-card {
-  /* White background */
-  background: white;
+  /* Dark background */
+  background: var(--color-bg-card);
 
   /* Padding inside card */
   padding: 1rem;
@@ -165,16 +166,16 @@
   text-align: center;
 
   /* Subtle border */
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
 }
 
 /* Highlighted stat card (for open violations) */
 .stat-card.highlight {
-  /* Light red background */
-  background: #fef2f2;
+  /* Dark red background */
+  background: rgba(239, 68, 68, 0.15);
 
   /* Red border */
-  border-color: #fecaca;
+  border-color: rgba(239, 68, 68, 0.3);
 }
 
 /* Large number in stat card */
@@ -182,7 +183,7 @@
   /* Big bold number */
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--color-text);
 
   /* Space below */
   margin-bottom: 0.25rem;
@@ -190,13 +191,13 @@
 
 /* Red color for highlighted stat */
 .stat-card.highlight .stat-value {
-  color: #dc2626;
+  color: #ef4444;
 }
 
 /* Label below number */
 .stat-label {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-light);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -211,7 +212,7 @@
 .violations-section h3 {
   margin: 0 0 1.5rem;
   font-size: 1.25rem;
-  color: #1f2937;
+  color: var(--color-text);
 }
 
 
@@ -227,12 +228,12 @@
   padding: 3rem 2rem;
 
   /* Gray text */
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
 .error-state {
   /* Red for errors */
-  color: #dc2626;
+  color: var(--color-secondary);
 }
 
 /* Spinner animation for loading */
@@ -268,17 +269,19 @@
 /* Individual violation card */
 .violation-item {
   /* Border and padding */
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 1rem;
+  background: var(--color-bg-elevated);
 
   /* Hover effect */
-  transition: box-shadow 0.2s;
+  transition: all 0.2s ease;
 }
 
 .violation-item:hover {
-  /* Subtle shadow on hover */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Glow on hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: var(--color-primary);
 }
 
 
@@ -352,7 +355,7 @@
 .violation-date {
   /* Gray small text */
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--color-text-light);
 
   /* Push to right if space allows */
   margin-left: auto;
@@ -365,8 +368,8 @@
   /* Normal text size */
   font-size: 0.875rem;
 
-  /* Dark gray */
-  color: #374151;
+  /* Light text */
+  color: var(--color-text);
 
   /* Line height for readability */
   line-height: 1.5;
@@ -386,7 +389,7 @@
 
   /* Small gray text */
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--color-text-light);
 }
 
 /* Rent impairing flag */
@@ -404,20 +407,20 @@
   padding: 1.5rem 2rem;
 
   /* Top border */
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-border);
 
   /* Right-align button */
   text-align: right;
 
-  /* Light background */
-  background: #f9fafb;
+  /* Dark background */
+  background: var(--color-bg-elevated);
 }
 
 /* Close button */
 .close-btn {
-  /* Blue button */
-  background: #3b82f6;
-  color: white;
+  /* Cyan button */
+  background: var(--color-primary);
+  color: var(--color-bg);
 
   /* Remove default border */
   border: none;
@@ -435,12 +438,14 @@
   cursor: pointer;
 
   /* Smooth transition */
-  transition: background 0.2s;
+  transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-  /* Darker blue on hover */
-  background: #2563eb;
+  /* Brighter with glow on hover */
+  background: var(--color-primary);
+  filter: brightness(1.2);
+  box-shadow: 0 0 20px var(--color-primary-glow);
 }
 
 

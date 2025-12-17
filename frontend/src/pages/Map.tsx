@@ -32,6 +32,7 @@ import type { Building } from '@/types/violation';
 // Components
 import { BuildingDetailModal } from '@/components/common/BuildingDetailModal';
 import { FilterBar, type BuildingFilters } from '@/components/common/FilterBar';
+import { FireIcon, MarkerIcon } from '@/components/common/Icons';
 
 // Styles
 import './Map.css';
@@ -419,14 +420,14 @@ export const Map = () => {
             onClick={() => setViewMode('heatmap')}
             aria-label="Heatmap view"
           >
-            🔥 Heatmap
+            <FireIcon size={16} /> Heatmap
           </button>
           <button
             className={viewMode === 'markers' ? 'active' : ''}
             onClick={() => setViewMode('markers')}
             aria-label="Markers view"
           >
-            📍 Markers
+            <MarkerIcon size={16} /> Markers
           </button>
         </div>
 

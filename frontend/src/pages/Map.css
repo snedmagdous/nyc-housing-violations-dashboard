@@ -360,6 +360,65 @@
   border: none !important;
 }
 
+/* CLUSTER MARKERS - CLOUD-LIKE FUZZY EDGES */
+/* ----------------------------------------- */
+.marker-cluster {
+  background-color: transparent !important;
+}
+
+.marker-cluster div {
+  background: radial-gradient(circle, rgba(0, 217, 255, 0.6) 0%, rgba(0, 217, 255, 0.3) 50%, rgba(0, 217, 255, 0.05) 100%);
+  border-radius: 50%;
+  border: none !important;
+  box-shadow:
+    0 0 20px 10px rgba(0, 217, 255, 0.3),
+    0 0 40px 20px rgba(0, 217, 255, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  filter: blur(0.5px);
+  transition: all 0.3s ease;
+}
+
+.marker-cluster span {
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 0.875rem !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  filter: blur(0px) !important;
+}
+
+.marker-cluster:hover div {
+  background: radial-gradient(circle, rgba(255, 0, 110, 0.6) 0%, rgba(255, 0, 110, 0.3) 50%, rgba(255, 0, 110, 0.05) 100%);
+  box-shadow:
+    0 0 25px 12px rgba(255, 0, 110, 0.4),
+    0 0 50px 25px rgba(255, 0, 110, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.15);
+  transform: scale(1.1);
+}
+
+.marker-cluster-small div {
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.6) 0%, rgba(250, 204, 21, 0.3) 50%, rgba(250, 204, 21, 0.05) 100%);
+  box-shadow:
+    0 0 15px 8px rgba(250, 204, 21, 0.3),
+    0 0 30px 15px rgba(250, 204, 21, 0.2),
+    inset 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.marker-cluster-medium div {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.6) 0%, rgba(245, 158, 11, 0.3) 50%, rgba(245, 158, 11, 0.05) 100%);
+  box-shadow:
+    0 0 20px 10px rgba(245, 158, 11, 0.3),
+    0 0 40px 20px rgba(245, 158, 11, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+.marker-cluster-large div {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.6) 0%, rgba(239, 68, 68, 0.3) 50%, rgba(239, 68, 68, 0.05) 100%);
+  box-shadow:
+    0 0 25px 12px rgba(239, 68, 68, 0.4),
+    0 0 50px 25px rgba(239, 68, 68, 0.2),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+}
+
 /* BOROUGH LABELS */
 /* --------------- */
 .borough-label {

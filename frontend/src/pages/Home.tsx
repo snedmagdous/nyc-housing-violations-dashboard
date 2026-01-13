@@ -80,8 +80,6 @@ export const Home = () => {
 
       {/* Statistics cards */}
       <section className="stats-section">
-        <h2>Current Data Overview</h2>
-
         {loading && <p className="loading">Loading statistics...</p>}
 
         {error && <div className="error-message">{error}</div>}

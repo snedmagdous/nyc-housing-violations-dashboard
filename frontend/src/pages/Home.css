@@ -133,10 +133,13 @@
 .stats-section {
   margin-bottom: 4rem;
   background: linear-gradient(135deg, rgba(30, 41, 59, 1) 0%, rgba(15, 23, 42, 1) 100%);
-  padding: 2.5rem;
+  padding: 3rem 2.5rem;
   border-radius: 16px;
   border: 1px solid var(--color-border);
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stats-section h2 {
@@ -170,7 +173,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
-  margin-bottom: 2rem;
+  width: 123%;
 }
 
 /* Stat Cards - Dark with Neon Glow */

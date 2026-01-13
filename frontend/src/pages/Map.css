@@ -39,6 +39,15 @@
   gap: 0.75rem;
 }
 
+/* FILTER BUTTON LEFT CONTAINER */
+/* ----------------------------- */
+.map-filter-left-container {
+  position: fixed;
+  top: 190px;  /* Below zoom controls */
+  left: 0.625rem;  /* Aligned with zoom controls */
+  z-index: 1001;
+}
+
 /* SEARCH BOX */
 /* ----------- */
 .map-search-box {
@@ -161,13 +170,13 @@
 /* ---------------------- */
 .floating-filter-panel {
   position: fixed;
-  top: 180px;  /* Below toggle button, pulled down more */
-  right: 1rem;
+  top: 240px;  /* Below filter button on the left */
+  left: 0.625rem;  /* Aligned with filter button */
   z-index: 1000;
 
   /* Sizing */
   width: 320px;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 260px);
   overflow-y: auto;
 
   /* Styling */
@@ -178,13 +187,13 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
 
   /* Animation */
-  animation: slideInRight 0.3s ease;
+  animation: slideInLeft 0.3s ease;
 }
 
-@keyframes slideInRight {
+@keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(-20px);
   }
   to {
     opacity: 1;

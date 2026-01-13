@@ -430,8 +430,10 @@ export const Map = () => {
             <MarkerIcon size={16} /> Markers
           </button>
         </div>
+      </div>
 
-        {/* Filter Toggle Button */}
+      {/* FILTER BUTTON - TOP LEFT NEXT TO ZOOM CONTROLS */}
+      <div className="map-filter-left-container">
         <button
           className="filter-toggle-btn"
           onClick={() => setShowFilters(!showFilters)}

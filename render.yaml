@@ -1,0 +1,36 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: nyc-violations-db
+    env: docker
+    plan: free
+    region: oregon
+    ipAllowList: []
+
+  # FastAPI Backend
+  - type: web
+    name: nyc-violations-api
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn src.api.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nyc-violations-db
+          property: connectionString
+      - key: NYC_OPEN_DATA_TOKEN
+        sync: false  # Set this manually in Render dashboard
+      - key: ENVIRONMENT
+        value: production
+
+databases:
+  - name: nyc-violations-db
+    databaseName: nyc_housing_violations
+    user: postgres
+    plan: free
+    region: oregon

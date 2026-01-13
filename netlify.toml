@@ -1,0 +1,18 @@
+[[build]]
+  # Directory where your frontend code lives
+  base = "frontend/"
+
+  # Build command
+  command = "npm run build"
+
+  # Directory containing built files
+  publish = "dist/"
+
+# Redirects for single-page app
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables (you'll set these in Netlify UI)
+# VITE_API_URL = your backend API URL from Render

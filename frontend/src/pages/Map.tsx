@@ -198,17 +198,23 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 // -----------------------------------
 function MapBoundsController({ buildings }: { buildings: Building[] }) {
   const map = useMap();
+  const hasSetInitialBoundsRef = useRef(false);
 
   useEffect(() => {
-    if (buildings.length > 0) {
-      // Fit map to show all buildings
-      const bounds = L.latLngBounds(
-        buildings.map(b => [b.latitude, b.longitude] as [number, number])
-      );
-      map.fitBounds(bounds, { padding: [50, 50] });
-    } else {
-      // Default NYC view
-      map.setView([40.7128, -74.0060], 11);
+    // Only fit bounds on initial load, not when filters change
+    if (!hasSetInitialBoundsRef.current) {
+      if (buildings.length > 0) {
+        // Fit map to show all buildings
+        const bounds = L.latLngBounds(
+          buildings.map(b => [b.latitude, b.longitude] as [number, number])
+        );
+        map.fitBounds(bounds, { padding: [50, 50] });
+        hasSetInitialBoundsRef.current = true;
+      } else {
+        // Default NYC view
+        map.setView([40.7128, -74.0060], 11);
+        hasSetInitialBoundsRef.current = true;
+      }
     }
   }, [buildings, map]);
 

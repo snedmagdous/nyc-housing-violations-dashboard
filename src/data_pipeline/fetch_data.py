@@ -132,7 +132,7 @@ if __name__ == "__main__":
     print("=== NYC Housing Violations Data Fetcher ===\n")
 
     # Fetch a sample of recent violations (for testing)
-    violations_df = fetch_hpd_violations(limit=10000)
+    violations_df = fetch_hpd_violations(limit=100000)
 
     print(f"\nViolations DataFrame shape: {violations_df.shape}")
     print(f"\nColumns: {list(violations_df.columns)}")

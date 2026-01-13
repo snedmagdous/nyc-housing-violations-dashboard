@@ -196,27 +196,61 @@ function HeatmapLayer({ points, buildings, onBuildingClick }: HeatmapLayerProps)
 
 // COMPONENT TO FIT MAP TO NYC BOUNDS
 // -----------------------------------
-function MapBoundsController({ buildings }: { buildings: Building[] }) {
+function MapBoundsController({
+  buildings,
+  shouldFitBounds,
+  onUserInteraction
+}: {
+  buildings: Building[],
+  shouldFitBounds: boolean,
+  onUserInteraction: () => void
+}) {
   const map = useMap();
-  const hasSetInitialBoundsRef = useRef(false);
+  const previousBuildingsCountRef = useRef(buildings.length);
+  const isAutoFittingRef = useRef(false);
 
   useEffect(() => {
-    // Only fit bounds on initial load, not when filters change
-    if (!hasSetInitialBoundsRef.current) {
+    // Only fit bounds if explicitly requested (initial load or filter change)
+    // Don't fit if buildings array changes due to search query (same count)
+    const buildingsCountChanged = previousBuildingsCountRef.current !== buildings.length;
+    previousBuildingsCountRef.current = buildings.length;
+
+    if (shouldFitBounds && buildingsCountChanged) {
+      isAutoFittingRef.current = true;
       if (buildings.length > 0) {
         // Fit map to show all buildings
         const bounds = L.latLngBounds(
           buildings.map(b => [b.latitude, b.longitude] as [number, number])
         );
         map.fitBounds(bounds, { padding: [50, 50] });
-        hasSetInitialBoundsRef.current = true;
       } else {
-        // Default NYC view
+        // Default NYC view when no buildings
         map.setView([40.7128, -74.0060], 11);
-        hasSetInitialBoundsRef.current = true;
       }
+      // Reset flag after a short delay
+      setTimeout(() => {
+        isAutoFittingRef.current = false;
+      }, 500);
     }
-  }, [buildings, map]);
+  }, [buildings, map, shouldFitBounds]);
+
+  // Detect user manual map interactions
+  useEffect(() => {
+    const handleUserMove = () => {
+      // Only disable auto-fit if this wasn't triggered by our own fitBounds call
+      if (!isAutoFittingRef.current) {
+        onUserInteraction();
+      }
+    };
+
+    map.on('movestart', handleUserMove);
+    map.on('zoomstart', handleUserMove);
+
+    return () => {
+      map.off('movestart', handleUserMove);
+      map.off('zoomstart', handleUserMove);
+    };
+  }, [map, onUserInteraction]);
 
   return null;
 }
@@ -319,6 +353,7 @@ export const Map = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'heatmap' | 'markers'>('heatmap');
+  const [shouldFitBounds, setShouldFitBounds] = useState(true); // Fit bounds on initial load and filter changes
 
   // FETCH BUILDINGS ON MOUNT AND WHEN FILTERS CHANGE
   // ------------------------------------------------
@@ -327,6 +362,7 @@ export const Map = () => {
       try {
         setLoading(true);
         setError(null);
+        setShouldFitBounds(true); // Fit bounds when filters change
 
         // Fetch buildings based on filters
         const response = await api.buildings.getAll({
@@ -518,7 +554,11 @@ export const Map = () => {
             <NYCMaskOverlay />
 
             {/* Auto-fit map bounds */}
-            <MapBoundsController buildings={filteredBuildings} />
+            <MapBoundsController
+              buildings={filteredBuildings}
+              shouldFitBounds={shouldFitBounds}
+              onUserInteraction={() => setShouldFitBounds(false)}
+            />
 
             {/* CONDITIONAL VIEW: HEATMAP OR MARKERS */}
             {viewMode === 'heatmap' ? (
